@@ -1,0 +1,10 @@
+.home{
+	background:#32d1ac;
+	background:-moz-linear-gradient(-45deg, #32d1ac 0%, #4a90e2 100%);
+	background:-webkit-gradient(linear, left top, right bottom, color-stop(0%, #32d1ac), color-stop(100%, #4a90e2));
+	background:-webkit-linear-gradient(-45deg, #32d1ac 0%, #4a90e2 100%);
+	background:-o-linear-gradient(-45deg, #32d1ac 0%, #4a90e2 100%);
+	background:-ms-linear-gradient(-45deg, #32d1ac 0%, #4a90e2 100%);
+	background:linear-gradient(135deg, #32d1ac 0%, #4a90e2 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#32d1ac', endColorstr='#4a90e2', GradientType=1);
+}

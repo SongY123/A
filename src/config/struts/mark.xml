@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+ 
+<struts>
+<constant name="struts.objectFactory" value="spring" />
+    <package name="Mark" namespace="/" extends="struts-default">
+    		<interceptors>
+       		<!--判断是否登录 和 是否有访问权限  -->
+       		<interceptor name="auth" class="userInterceptor" />      
+       		<interceptor-stack name="myStack">
+				<interceptor-ref name="auth"></interceptor-ref> 
+            	<interceptor-ref name="defaultStack"></interceptor-ref>          
+        	</interceptor-stack>          
+      	</interceptors>
+      
+      	<default-interceptor-ref name="myStack"></default-interceptor-ref>      
+      	<!--  全局结果 -->
+      	<global-results>
+      	<!-- 拦截没登录返回结果 -->
+            <result name="NOTLOGINED" type="redirect">/</result>
+      	</global-results>
+        <!-- segmentation -->
+        <action name="segmentation" class="segmentationAction">
+        <result name="success">/jsp/mark/segmentation.jsp</result>
+        <result name="error" >error.jsp</result>
+        </action>
+        
+        <!-- nominal -->
+        <action name="nominal" class="nominalAction">
+        <result name="success" >/jsp/mark/nominal.jsp</result>
+        <result name="error" >error.jsp</result>
+        </action>
+        
+        <!-- entity -->
+        <action name="entity" class="entityAction">
+        <result name="success">/jsp/mark/entity.jsp</result>
+        <result name="error" >error.jsp</result>
+        </action>
+        <!-- entity attribute -->
+        <action name="entityAttr" class="entityAttrAction">
+        	<result name="success" type="stream">
+        		<param name="contentType">text/html</param>
+                <param name="inputName">successString</param>
+        	</result>
+        	<result name="error" >error.jsp</result>
+        </action>
+        <!-- entity change -->
+        <action name="nominalChange" class="nominalChangeAction">
+        	<result name="success" type="stream">
+        		<param name="contentType">text/html</param>
+                <param name="inputName">successString</param>
+        	</result>
+        	<result name="error" >error.jsp</result>
+        </action>
+        
+        <!-- incident -->
+        <action name="incident" class="incidentAction">
+        <result name="success">/jsp/mark/incident.jsp</result>
+        <result name="error" >error.jsp</result>
+        </action>
+        
+        <!-- incident -->
+        <action name="addLabel" class="addLabelAction">
+        	<result name="success" type="stream">
+        		<param name="contentType">text/html</param>
+                <param name="inputName">successString</param>
+        	</result>
+        	<result name="error" type="stream">
+        		<param name="contentType">text/html</param>
+                <param name="inputName">errorString</param>
+        	</result>
+        </action>
+        <action name="irrelevantLabel" class="irrelevantLabelAction">
+        	<result name="success" type="stream">
+        		<param name="contentType">text/html</param>
+                <param name="inputName">successString</param>
+        	</result>
+        	<result name="error" type="stream">
+        		<param name="contentType">text/html</param>
+                <param name="inputName">errorString</param>
+        	</result>
+        </action>
+        <action name="confirmLabel" class="confirmLabelAction">
+        	<result name="success" type="stream">
+        		<param name="contentType">text/html</param>
+                <param name="inputName">successString</param>
+        	</result>
+        	<result name="error" type="stream">
+        		<param name="contentType">text/html</param>
+                <param name="inputName">errorString</param>
+        	</result>
+        </action>
+    </package>
+</struts>

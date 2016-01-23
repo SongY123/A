@@ -1,0 +1,9 @@
+CREATE TABLE `user` (
+	`id` int(11) NOT NULL auto_increment,  
+	`username` char(128) NOT NULL,
+	`password` varchar(32) NOT NULL, 
+	`authority` int(11) default '0',  
+	`lastVisit` datetime default NULL,  
+	`lastIp` varchar(23) NOT NULL,  
+	PRIMARY KEY  (`id`)  
+) ENGINE=MyISAM DEFAULT CHARSET=utf8; 

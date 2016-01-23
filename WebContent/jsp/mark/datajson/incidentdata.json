@@ -1,0 +1,92 @@
+{
+	"message": "",
+	"value": [
+		{
+"attribute1":"1",
+"attribute2":"公开声明",
+"attribute3":"Make Public Statement"
+},{
+"attribute1":"2",
+"attribute2":"呼吁",
+"attribute3":"Appeal"
+},{
+"attribute1":"3",
+"attribute2":"表达合作意向",
+"attribute3":"Express Intent to Cooperate"
+},{
+"attribute1":"4",
+"attribute2":"商议",
+"attribute3":"Consult"
+},{
+"attribute1":"5",
+"attribute2":"进行外交合作",
+"attribute3":"Engage in Diplomatic Cooperation"
+},{
+"attribute1":"6",
+"attribute2":"进行实质合作",
+"attribute3":"Engage in Material Cooperation"
+},{
+"attribute1":"7",
+"attribute2":"提供援助",
+"attribute3":"Provide Aid"
+},{
+"attribute1":"8",
+"attribute2":"让步",
+"attribute3":"Yield"
+},{
+"attribute1":"9",
+"attribute2":"调查",
+"attribute3":"investigate"
+},{
+"attribute1":"10",
+"attribute2":"要求",
+"attribute3":"Demand"
+},{
+"attribute1":"11",
+"attribute2":"不赞成",
+"attribute3":"Disapprove"
+},{
+"attribute1":"12",
+"attribute2":"拒绝",
+"attribute3":"Reject"
+},{
+"attribute1":"13",
+"attribute2":"威胁",
+"attribute3":"Threaten"
+},{
+"attribute1":"14",
+"attribute2":"抗议",
+"attribute3":"protest"
+},{
+"attribute1":"15",
+"attribute2":"展示军事姿态",
+"attribute3":"Exhibit Force Posture"
+},{
+"attribute1":"16",
+"attribute2":"减少关系",
+"attribute3":"Reduce Relations"
+},{
+"attribute1":"17",
+"attribute2":"强迫",
+"attribute3":"Coerce"
+},{
+"attribute1":"18",
+"attribute2":"袭击",
+"attribute3":"Assault"
+},{
+"attribute1":"19",
+"attribute2":"战斗",
+"attribute3":"Fight"
+},{
+"attribute1":"20",
+"attribute2":"进行非常规、大规模暴力",
+"attribute3":"Engage in Unconventional Mass Violence"
+},{
+"attribute1":"21",
+"attribute2":"无法做出标注",
+"attribute3":"Cannot judge"
+}
+	],
+	"code": 200,
+	"redirect": ""
+}
