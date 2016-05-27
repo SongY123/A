@@ -5,7 +5,7 @@
  
 <struts>
 <constant name="struts.objectFactory" value="spring" />
-    <package name="Mark" namespace="/" extends="struts-default">
+    <package name="Mark" namespace="/" extends="struts-default,json-default">
     		<interceptors>
        		<!--判断是否登录 和 是否有访问权限  -->
        		<interceptor name="auth" class="userInterceptor" />      
@@ -91,6 +91,10 @@
         		<param name="contentType">text/html</param>
                 <param name="inputName">errorString</param>
         	</result>
+        </action>
+        <action name="restart" class="restartAction">
+        	<result name="success"  type="redirect">incident?dbname=${dbname}&amp;newsid=${newsid}&amp;state=%{state}</result>
+        	<result name="error" >error.jsp</result>
         </action>
     </package>
 </struts>

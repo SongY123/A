@@ -60,7 +60,7 @@ public class EntityAction extends ActionSupport{
 	
 	public String execute() throws Exception
 	{
-		News news = findNewsService.findNewsById(dbname, newsid);
+		News news = findNewsService.findNewsById(dbname, newsid,1);
 		ActionContext actionContext = ActionContext.getContext();
 	    Map session = actionContext.getSession();
 	    String title = news.getTitle();

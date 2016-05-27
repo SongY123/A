@@ -16,12 +16,12 @@ public class NewsListService {
 		this.newsDao = newsDao;
 	}
 	
-	public List<News> getNewsList(String database, int beginid, int state){//所有新闻
-		return newsDao.getNewsList(database,beginid,state);
+	public List<News> getNewsList(String database, int beginid, int state,int authority){//所有新闻
+		return newsDao.getNewsList(database,beginid,state,authority);
 	}
 	
-	public int getPage(String database, int beginid, int sizeeachpage,int state){
-		int count = newsDao.getCountLessThanThisID(database, beginid,state);
+	public int getPage(String database, int beginid, int sizeeachpage,int state,int authority){
+		int count = newsDao.getCountLessThanThisID(database, beginid,state,authority);
 		if(count%sizeeachpage!=0)return count/sizeeachpage+1;
 		else return count/sizeeachpage;
 	}

@@ -14,6 +14,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import model.News;
 import model.User;
 import service.FindNewsService;
+import service.LoginService;
 import service.NewsListService;
 
 public class ChoosenewsAction extends ActionSupport implements Action{
@@ -25,6 +26,7 @@ public class ChoosenewsAction extends ActionSupport implements Action{
 	private int newsListSize;
 	private int pageCountActual;
 	private int state;
+	private LoginService loginService; 
 	public List<News> getList() {
 		return list;
 	}
@@ -88,16 +90,25 @@ public class ChoosenewsAction extends ActionSupport implements Action{
 	public void setState(int state) {
 		this.state = state;
 	}
+	public LoginService getLoginService() {
+		return loginService;
+	}
+
+	public void setLoginService(LoginService loginService) {
+		this.loginService = loginService;
+	}
 
 	public String execute() throws Exception 
 	{
-		System.out.println(dbname);
-		System.out.println(beginid);
-		int pagecount = newsListService.getPage(dbname, (beginid-1)*sizeeachpage,sizeeachpage,state);
+		ActionContext actionContext = ActionContext.getContext();
+	    Map session = actionContext.getSession();
+	    String username = (String) session.get("username");
+	    int authority = loginService.getAuthority(username);
+		int pagecount = newsListService.getPage(dbname, (beginid-1)*sizeeachpage,sizeeachpage,state,authority);
 		System.out.println(pagecount);
 		pageCountActual = pagecount>10?10:pagecount;
 		System.out.println(pageCountActual);
-		list = newsListService.getNewsList(dbname,(beginid-1)*sizeeachpage,state);
+		list = newsListService.getNewsList(dbname,(beginid-1)*sizeeachpage,state,authority);
 		int newsListSize = list.size();
 		System.out.println("newsListSize "+newsListSize);
 		return this.SUCCESS;

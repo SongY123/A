@@ -56,7 +56,7 @@ public class NewsListAction extends ActionSupport implements Action{
 	{
 		System.out.println(dbname);
 		newsList = new HashMap<String,Object>();
-		List<News> list = newsListService.getNewsList(dbname,(beginid-1)*10,0);
+		List<News> list = newsListService.getNewsList(dbname,(beginid-1)*10,0,1);
 		newsList.put("size", list.size());
 		
 		List<Map<String, String>> l = new ArrayList<Map<String, String>>();

@@ -36,8 +36,14 @@ public class UserDao implements IUserDao  {
 		}
     }  
     
+    public int getAuthorityByName(String username){
+    	String findUsersql = "select authority from user where username = ?";
+    	Object[]args = {username};
+    	int authority = jdbcTemplate.queryForObject(findUsersql, args, int.class);
+        return authority;
+    }
     public User findUserByName(String username) {  
-    	String findUsersql = "select * from user where username = *";
+    	String findUsersql = "select * from user where username = ?";
     	Object[]args = {username};
     	List rows = jdbcTemplate.queryForList(findUsersql, args);
         User user = new User();

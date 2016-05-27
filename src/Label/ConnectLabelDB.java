@@ -6,11 +6,15 @@ Created on 2015年10月19日 上午10:40:20
 @author: GreatShang
 */
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
+
 import org.apache.commons.dbcp.BasicDataSource;
 public class ConnectLabelDB 
 {
@@ -121,6 +125,81 @@ CREATE TABLE `label_formal_data` (
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * 更新数据库
+	 * @param news_id
+	 * @param news_source
+	 * @param title
+	 * @param trigger
+	 * @param type
+	 * @param source
+	 * @param target
+	 */
+	public  void  UpdateLabeltoTempTable(int news_id,String news_source,String title,String trigger,int type,String source,String target)
+	{
+		try 
+		{
+			java.util.Date date=new java.util.Date();
+			date.getTime();
+			String query ="UPDATE label_temp_data set source_actor="+"\""+source+"\""+",trigger_word="+"\""+trigger+"\""+",target_actor="+"\""
+			+target+"\""+",event_type="+type+",mark_time="+"\""+date.toString()+"\""+",if_event=1 where news_id="+news_id+" "
+					+ "and news_source="+"\""+news_source+"\"";
+			jdbcTemplate.execute(query);
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			System.out.println("Update failed.");
+		}
+	}
+
+	/**从临时表中获取全部自动标注的数据
+	 * To Song Yang: 借口可用，从零时表中获取待标注数据，
+	 */
+	public String isActor(String segname)
+	{
+		
+		queryString =	"select * from totalinfor where totalinfor.nername ="+"\""+segname+"\"";
+//		System.out.println("queryString:"+queryString);
+
+		//where totalinfor.nername = "+segname;
+		String newsSource = "";
+		try 
+		{
+			List<Map<String, Object>> rows = jdbcTemplate.queryForList(queryString);
+			if(rows.size()>0)newsSource = (String)rows.get(0).get("relatingtable");			
+		} 
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return newsSource;
+	}
+	
+	/**
+	 * 更新数据库
+	 * @param id
+	 * @param trigger
+	 * @param type
+	 * @param source 
+	 * @param target
+	 */
+	public  void  UpdateLabeltoTempTable(String news_id,String news_source,String trigger,int type,String source,String target)
+	{
+		try 
+		{
+			java.util.Date date=new java.util.Date();
+			date.getTime();
+			String query ="UPDATE label_temp_data set source_actor="+source+",trigger_word="+trigger+",target_actor="+target+",event_type="+type+"mark_time="+date.toString()+",if_event=1 where news_id="+news_id+" and news_source="+news_source;
+			jdbcTemplate.execute(query);
+		}
+		catch (Exception e) 
+		{
+			e.printStackTrace();
+			System.out.println("Update failed.");
+		}
+	}
+	
 	/**向正式表中添加标注结果
 	 * 
 	 * To Song Yang: 该接口可用
@@ -423,6 +502,51 @@ CREATE TABLE `label_formal_data` (
 		}
 		return seachResult;
 	}
+	
+	public LabelItem GetTestdataByNewsID(long news_id, String news_source){//temp use for test_data
+		queryString = "SELECT * FROM test_data where news_id="+news_id+" and news_source=\""+news_source+"\"";
+		System.out.println(queryString);
+		try{
+			List rows = jdbcTemplate.queryForList(queryString);
+			int isEvent = 0;
+			String newsSource;
+			String newsID ;
+			String newsTitle ;
+			String labelID;
+			if(rows.size()>0){
+				Map line = (Map)rows.get(0);
+				labelID = Long.toString((long)line.get("label_id"));
+				newsSource = (String)line.get("news_source");
+				newsID 	= Long.toString((long)line.get("news_id"));
+				newsTitle = (String)line.get("news_title");
+				isEvent = (boolean)line.get("if_event")==true?1:0;
+				
+				if(newsSource == null||newsID == null || newsTitle == null)
+					System.out.println("Something null from DB");
+				LabelItem label;
+				if(isEvent == 0)
+					label= new LabelItem(labelID,newsSource,newsID,newsTitle);
+				else
+				//	public LabelItem(String labelID,String newsSource,String newsID,String newsTitle,int eventType,
+				//			String sourceActor,String targetActor,String triggerWord,
+				//			String eventTime,String eventLocation)
+				{
+					label = new LabelItem(labelID,newsSource,newsID, newsTitle, (int)line.get("event_type"),
+							(String)line.get("source_actor"), (String)line.get("target_actor"), (String)line.get("trigger_word"),
+							(String)line.get("event_date"), (String)line.get("event_location"));
+				}
+				int if_remark=(boolean)line.get("if_remark")==true?1:0;
+				label.if_remark = if_remark;
+				return label;
+			}
+		}
+		catch(Exception e) 
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public LabelItem GetTempLabelByNewsID(long news_id,String news_source)
 	{
 		queryString = "SELECT * FROM label_temp_data where news_id="+news_id+" and news_source=\""+news_source+"\"";

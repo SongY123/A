@@ -1,5 +1,7 @@
 package dao;
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -28,23 +30,37 @@ public class NewsDao implements INewsDao{
 	}
 	
 	@Override
-	public News findNewsById(String id, String database) {
-		String findsql = "select * from "+database+" where id=?";
-		Object[]args ={id};
-		List rows = jdbcTemplate.queryForList(findsql,args);
-		Map line = (Map)rows.get(0);
-		News news = new News();
-		news.setId((long)line.get("id"));
-		news.setTitle((String)line.get("title"));
-		news.setAgent((String)line.get("agent"));
-		news.setAuthor((String)line.get("author"));
-		news.setUrl((String)line.get("url"));
-		news.setContent((byte[])line.get("content"));
-		news.setPicture((byte[])line.get("picture"));
-		news.setUpdateTime((Date)line.get("updateTime"));
-		news.setSaveTime((Date)line.get("saveTime"));
-		news.setState((int)line.get("state"));
-		return news;
+	public News findNewsById(String id, String database,int authority) {
+		if(authority==0){
+			String sql = "select * from test_data where news_source=? and news_id=?";
+			System.out.println("database:"+database);
+			System.out.println("newsid:"+id);
+			Object[]args = {database, id};
+			List rows = jdbcTemplate.queryForList(sql, args);
+			Map line = (Map)rows.get(0);
+			News news = new News();
+			news.setId((long)line.get("news_id"));
+			news.setTitle((String)line.get("news_title"));
+			return news;
+		}
+		else{
+			String findsql = "select * from "+database+" where id=?";
+			Object[]args ={id};
+			List rows = jdbcTemplate.queryForList(findsql,args);
+			Map line = (Map)rows.get(0);
+			News news = new News();
+			news.setId((long)line.get("id"));
+			news.setTitle((String)line.get("title"));
+			news.setAgent((String)line.get("agent"));
+			news.setAuthor((String)line.get("author"));
+			news.setUrl((String)line.get("url"));
+			news.setContent((byte[])line.get("content"));
+			news.setPicture((byte[])line.get("picture"));
+			news.setUpdateTime((Date)line.get("updateTime"));
+			news.setSaveTime((Date)line.get("saveTime"));
+			news.setState((int)line.get("state"));
+			return news;
+		}
 	}
 
 	@Override
@@ -91,35 +107,59 @@ public class NewsDao implements INewsDao{
 	}
 
 	@Override
-	public List<News> getNewsList(String database,int beginid,int state) {
+	public List<News> getNewsList(String database,int beginid,int state,int authority) 
+	{
 		List<News> newsList = new ArrayList<News>();
-		String findsql = null;
-		if(state==1)//未修改 database.state=0
-			findsql = "select * from "+database+" where state=0 order by savetime desc limit "+beginid+",10";
-		else if(state==2)//未确认database.state=1
-			findsql = "select * from "+database+" where state=1 order by savetime desc limit "+beginid+",10";
-		else if(state==3)//已确认database.state=2
-			findsql = "select * from "+database+" where state=2 order by savetime desc limit "+beginid+",10";
-		else //所有database.state=0,1,2
-			findsql = "select * from "+database+" order by savetime desc limit "+beginid+",10";
-		System.out.println(findsql);
-		List rows = jdbcTemplate.queryForList(findsql);
-		for(int i = 0;i<rows.size();i++)
-		{
-			Map line = (Map)rows.get(i);
-			News news = new News();
-			news.setId((long)line.get("id"));
-			news.setTitle((String)line.get("title"));
-			news.setAgent((String)line.get("agent"));
-			news.setAuthor((String)line.get("author"));
-			news.setUrl((String)line.get("url"));
-			//System.out.println(line.get("content").getClass());
-			news.setContent((byte[])line.get("content"));
-			news.setPicture((byte[])line.get("picture"));
-			news.setUpdateTime((Date)line.get("updateTime"));
-			news.setSaveTime((Date)line.get("saveTime"));
-			news.setState((int)line.get("state"));
-			newsList.add(news);
+		if(authority==0){
+			String findsql = "select * from test_data where news_source=\""+database+"\" limit "+ beginid+",10";
+			List rows = jdbcTemplate.queryForList(findsql);
+			for(int i = 0;i<rows.size();i++)
+			{
+				Map line = (Map)rows.get(i);
+				News news = new News();
+				news.setId((long)line.get("news_id"));
+				news.setTitle((String)line.get("news_title"));
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date date = null;
+				try {
+					date = sdf.parse("2008-08-08 12:10:12");
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				news.setUpdateTime(date);
+				newsList.add(news);
+			}
+		}
+		else{
+			String findsql = null;
+			if(state==1)//未修改 database.state=0
+				findsql = "select * from "+database+" where state=0 order by savetime desc limit "+beginid+",10";
+			else if(state==2)//未确认database.state=1
+				findsql = "select * from "+database+" where state=1 order by savetime desc limit "+beginid+",10";
+			else if(state==3)//已确认database.state=2
+				findsql = "select * from "+database+" where state=2 order by savetime desc limit "+beginid+",10";
+			else //所有database.state=0,1,2
+				findsql = "select * from "+database+" order by savetime desc limit "+beginid+",10";
+			System.out.println(findsql);
+			List rows = jdbcTemplate.queryForList(findsql);
+			for(int i = 0;i<rows.size();i++)
+			{
+				Map line = (Map)rows.get(i);
+				News news = new News();
+				news.setId((long)line.get("id"));
+				news.setTitle((String)line.get("title"));
+				news.setAgent((String)line.get("agent"));
+				news.setAuthor((String)line.get("author"));
+				news.setUrl((String)line.get("url"));
+				//System.out.println(line.get("content").getClass());
+				news.setContent((byte[])line.get("content"));
+				news.setPicture((byte[])line.get("picture"));
+				news.setUpdateTime((Date)line.get("updateTime"));
+				news.setSaveTime((Date)line.get("saveTime"));
+				news.setState((int)line.get("state"));
+				newsList.add(news);
+			}
 		}
 		return newsList;
 	}
@@ -130,48 +170,71 @@ public class NewsDao implements INewsDao{
 		return count;
 	}
 	
-	public int getCountLessThanThisID(String database,int beginid,int state){
-		String findsql = null;
-		if(state==1)//未修改 database.state=0
-			findsql = "select count(*) from "+database+" where state=0";
-		else if(state==2)//未确认database.state=1
-			findsql = "select count(*) from "+database+" where state=1";
-		else if(state==3)//已确认database.state=2
-			findsql = "select count(*) from "+database+" where state=2";
-		else //所有database.state=0,1,2
-			findsql = "select count(*) from "+database;
-		Integer count = (int)jdbcTemplate.queryForObject(findsql,Integer.class);
-		return count-beginid;
+	public int getCountLessThanThisID(String database,int beginid,int state,int authority){
+		if(authority==0){
+			String findsql = "select count(*) from test_data where news_source=\""+database+"\"";
+			Integer count = (int)jdbcTemplate.queryForObject(findsql,Integer.class);
+			return count-beginid;
+		}
+		else{
+			String findsql = null;
+			if(state==1)//未修改 database.state=0
+				findsql = "select count(*) from "+database+" where state=0";
+			else if(state==2)//未确认database.state=1
+				findsql = "select count(*) from "+database+" where state=1";
+			else if(state==3)//已确认database.state=2
+				findsql = "select count(*) from "+database+" where state=2";
+			else //所有database.state=0,1,2
+				findsql = "select count(*) from "+database;
+			Integer count = (int)jdbcTemplate.queryForObject(findsql,Integer.class);
+			return count-beginid;
+		}
 	}
 	
-	public boolean isFirst(String dbname,String id, int state){
-		String findsql = null;
-		if(state==1)//未修改 database.state=0
-			findsql = "select  count(*) from "+dbname+" where saveTime < (select saveTime from "+dbname+" where id="+id+") and state=0";
-		else if(state==2)//未确认database.state=1
-			findsql = "select  count(*) from "+dbname+" where saveTime < (select saveTime from "+dbname+" where id="+id+") and state=1";
-		else if(state==3)//已确认database.state=2
-			findsql = "select  count(*) from "+dbname+" where saveTime < (select saveTime from "+dbname+" where id="+id+") and state=2";
-		else //所有database.state=0,1,2
-			findsql = "select  count(*) from "+dbname+" where saveTime < (select saveTime from "+dbname+" where id="+id+")";
-		int count = jdbcTemplate.queryForObject(findsql, Integer.class);
-		System.out.println("isFirst "+count);
-		return count==0?true:false;
+	public boolean isFirst(String dbname,String id, int state,int authority){
+		if(authority==0){
+			String sql = "select count(*) from test_data where news_source=? and news_id>?";
+			Object[]args = {dbname,id};
+			int count = jdbcTemplate.queryForObject(sql, args, Integer.class);
+			return count==0?true:false;
+		}
+		else{
+			String findsql = null;
+			if(state==1)//未修改 database.state=0
+				findsql = "select  count(*) from "+dbname+" where saveTime < (select saveTime from "+dbname+" where id="+id+") and state=0";
+			else if(state==2)//未确认database.state=1
+				findsql = "select  count(*) from "+dbname+" where saveTime < (select saveTime from "+dbname+" where id="+id+") and state=1";
+			else if(state==3)//已确认database.state=2
+				findsql = "select  count(*) from "+dbname+" where saveTime < (select saveTime from "+dbname+" where id="+id+") and state=2";
+			else //所有database.state=0,1,2
+				findsql = "select  count(*) from "+dbname+" where saveTime < (select saveTime from "+dbname+" where id="+id+")";
+			int count = jdbcTemplate.queryForObject(findsql, Integer.class);
+			System.out.println("isFirst "+count);
+			return count==0?true:false;
+		}
 	}
 	
-	public boolean isLast(String dbname, String id, int state){
-		String findsql = null;
-		if(state==1)//未修改 database.state=0
-			findsql = "select  count(*) from "+dbname+" where saveTime > (select saveTime from "+dbname+" where id="+id+") and state=0";
-		else if(state==2)//未确认database.state=1
-			findsql = "select  count(*) from "+dbname+" where saveTime > (select saveTime from "+dbname+" where id="+id+") and state=1";
-		else if(state==3)//已确认database.state=2
-			findsql = "select  count(*) from "+dbname+" where saveTime > (select saveTime from "+dbname+" where id="+id+") and state=2";
-		else //所有database.state=0,1,2
-			findsql = "select  count(*) from "+dbname+" where saveTime > (select saveTime from "+dbname+" where id="+id+")";
-		int count = jdbcTemplate.queryForObject(findsql, Integer.class);
-		System.out.println("isLast "+count);
-		return count==0?true:false;
+	public boolean isLast(String dbname, String id, int state,int authority){
+		if(authority==0){
+			String sql = "select count(*) from test_data where news_source=? and news_id<?";
+			Object[]args = {dbname,id};
+			int count = jdbcTemplate.queryForObject(sql, args, Integer.class);
+			return count==0?true:false;
+		}
+		else{
+			String findsql = null;
+			if(state==1)//未修改 database.state=0
+				findsql = "select  count(*) from "+dbname+" where saveTime > (select saveTime from "+dbname+" where id="+id+") and state=0";
+			else if(state==2)//未确认database.state=1
+				findsql = "select  count(*) from "+dbname+" where saveTime > (select saveTime from "+dbname+" where id="+id+") and state=1";
+			else if(state==3)//已确认database.state=2
+				findsql = "select  count(*) from "+dbname+" where saveTime > (select saveTime from "+dbname+" where id="+id+") and state=2";
+			else //所有database.state=0,1,2
+				findsql = "select  count(*) from "+dbname+" where saveTime > (select saveTime from "+dbname+" where id="+id+")";
+			int count = jdbcTemplate.queryForObject(findsql, Integer.class);
+			System.out.println("isLast "+count);
+			return count==0?true:false;
+		}
 	}
 	public long getLastNewsId(String dbname, String id, int state){
 		

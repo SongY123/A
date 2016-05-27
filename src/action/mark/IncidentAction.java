@@ -20,6 +20,7 @@ import Label.LabelItem;
 import model.News;
 import net.sf.json.JSONObject;
 import service.FindNewsService;
+import service.LoginService;
 
 
 public class IncidentAction extends ActionSupport implements Action{
@@ -37,6 +38,7 @@ public class IncidentAction extends ActionSupport implements Action{
 	private String nextnewsid;//下一条新闻id
 	private String lastnewsid;//上一条新闻id
 	private int state;
+	private LoginService loginService;
 	public ConnectLabelDB getConnectLabelDB() {
 		return connectLabelDB;
 	}
@@ -108,6 +110,13 @@ public class IncidentAction extends ActionSupport implements Action{
 	public void setIncidenttype(int incidenttype) {
 		this.incidenttype = incidenttype;
 	}
+	public LoginService getLoginService() {
+		return loginService;
+	}
+
+	public void setLoginService(LoginService loginService) {
+		this.loginService = loginService;
+	}
 
 	public void initJSONObject(){
 		String rootPath;
@@ -171,24 +180,45 @@ public class IncidentAction extends ActionSupport implements Action{
 	public String execute() throws Exception {
 		if_commit = 0;
 		if_relevant = -1;
-		News news = findNewsService.findNewsById(dbname, newsid);
-		isfirst = findNewsService.isFirst(dbname, newsid, state)?1:0;
-		islast = findNewsService.isLast(dbname, newsid, state)?1:0;
-		if(isfirst!=1){//获取下一条新闻id
-			nextnewsid = Long.toString(findNewsService.getNextNewsId(dbname, Long.toString(news.getId()), state));
-			System.out.println("nextnewsid "+nextnewsid);
-		}
-		if(islast!=1){//获取上一条新闻id
-			lastnewsid = Long.toString(findNewsService.getLastNewsId(dbname, Long.toString(news.getId()), state));
-			System.out.println("lastnewsid+ "+lastnewsid);
-		}
 		ActionContext actionContext = ActionContext.getContext();
 	    Map session = actionContext.getSession();
+	    String username = (String) session.get("username");
+	    int authority = loginService.getAuthority(username);
+	    System.out.println("authority:"+authority);
+		News news = findNewsService.findNewsById(dbname, newsid,authority);
+		System.out.println("title:"+news.getTitle());
+		isfirst = findNewsService.isFirst(dbname, newsid, state, authority)?1:0;
+		islast = findNewsService.isLast(dbname, newsid, state, authority)?1:0;
+		
+		if(authority==0){
+			if(isfirst!=1){//获取下一条新闻id
+				nextnewsid = Long.toString(news.getId()+1);
+				System.out.println("nextnewsid "+nextnewsid);
+			}
+			if(islast!=1){//获取上一条新闻id
+				lastnewsid = Long.toString(news.getId()-1);
+				System.out.println("lastnewsid+ "+lastnewsid);
+			}
+		}
+		else{
+			if(isfirst!=1){//获取下一条新闻id
+				nextnewsid = Long.toString(findNewsService.getNextNewsId(dbname, Long.toString(news.getId()), state));
+				System.out.println("nextnewsid "+nextnewsid);
+			}
+			if(islast!=1){//获取上一条新闻id
+				lastnewsid = Long.toString(findNewsService.getLastNewsId(dbname, Long.toString(news.getId()), state));
+				System.out.println("lastnewsid+ "+lastnewsid);
+			}
+		}
 	    String title = news.getTitle();
-	    String context = Byte.toString(news.getContent()[0]);
 	    session.put("title",title);
 	    session.put("context",null);
-		LabelItem label = connectLabelDB.GetTempLabelByNewsID(news.getId(), dbname);
+	    LabelItem label = null;
+	    if(authority==0){
+	    	label = connectLabelDB.GetTestdataByNewsID(news.getId(), dbname);
+	    }
+	    else
+	    	label = connectLabelDB.GetTempLabelByNewsID(news.getId(), dbname);
 	    //System.out.println(label.eventType);
 	    //System.out.println(label.sourceActor);
 	    //System.out.println(label.triggerWord);
@@ -196,6 +226,8 @@ public class IncidentAction extends ActionSupport implements Action{
 	    //System.out.println(label.eventTime);
 	    //System.out.println(label.eventLocation);
 	    //System.out.println(jo.get(Integer.toString(label.eventType)));
+	    //强制将if_remark设置为不可更改
+	    label.if_remark=0;
 	    if_commit = news.getState()==1?1:0;
 	    if_relevant = news.getState()==2?1:0;
 		if(label!=null){

@@ -101,6 +101,7 @@
 	</bean>
 	
 	<bean id="choosenewsAction" class="action.news.ChoosenewsAction">
+		<property name="loginService" ref="loginService"></property> 
 		<property name="newsListService" ref="newsListService"></property> 
 	</bean>
 
@@ -130,12 +131,30 @@
 	<bean id="incidentAction" class="action.mark.IncidentAction" init-method="initJSONObject">
 		<property name="connectLabelDB" ref="connectLabelDB"></property>
 		<property name="findNewsService" ref="findNewsService"></property>
+		<property name="loginService" ref="loginService"></property>
 	</bean>
 	
 	<bean id="addLabelAction" class = "action.mark.AddLabelAction">
 		<property name="connectLabelDB" ref="connectLabelDB"></property>
 	</bean>
 
+	<!-- Other -->
+	<bean id="dependencyParser_LTP" class="Java_EventDetection_News.RoleExtract.DependencyParser_LTP">
+	</bean>
+	<bean id="preprocess" class="Java_EventDetection_News.RoleExtract.Preprocess" init-method="init">
+		<property name="connectLabelDB" ref="connectLabelDB"></property>
+	</bean>
+	<bean id="based_rule" class="Java_EventDetection_News.RoleExtract.Based_rule">
+		<property name="connectLabelDB" ref="connectLabelDB"></property>
+		<property name="dependencyParser_LTP" ref="dependencyParser_LTP"></property>
+		<property name="preprocess" ref="preprocess"></property>
+	</bean>
+	
+	<bean id="restartAction" class = "action.mark.RestartAction">
+		<property name="connectLabelDB" ref="connectLabelDB"></property>
+		<property name="based_rule" ref="based_rule"></property>
+	</bean>
+	
 	<bean id="confirmLabelAction" class = "action.mark.ConfirmLabelAction">
 		<property name="connectLabelDB" ref="connectLabelDB"></property>
 	</bean>
@@ -155,4 +174,5 @@
 	<!-- Interceptor -->
 	<bean id="userInterceptor" class = "interceptor.UserInterceptor">
 	</bean>
+	
 </beans> 

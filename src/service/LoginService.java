@@ -14,6 +14,9 @@ public class LoginService {
         this.userDao = userDao;  
     }  
     
+	public int getAuthority(String username){
+		return userDao.getAuthorityByName(username);
+	}
     public boolean login(User user) throws Exception{  
         boolean flag=false;  
         if(userDao.checkUser(user.getUsername(), user.getPassword())){  

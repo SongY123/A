@@ -332,7 +332,8 @@ String location = (String)session.getAttribute("location");
 				
 				<td class="col-xs-8">
 					<button type="button" id="change" class="btn btn-primary"  data-toggle="modal" data-target="#myModalChange">提交</button>&nbsp;&nbsp;&nbsp;&nbsp;
-					<button type="button" id="confirm" class="btn btn-primary" data-toggle="modal" data-target="#myModal">不相关</button>
+					<button type="button" id="confirm" class="btn btn-primary" data-toggle="modal" data-target="#myModal">不相关</button>&nbsp;&nbsp;&nbsp;&nbsp;
+					<button type="button" id="restart" class="btn btn-primary">重新抽取</button>
 				</td>
 			</tr>
 
@@ -379,6 +380,25 @@ String location = (String)session.getAttribute("location");
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    
+    <div class="modal fade" id="myModalrestart">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">是否确定提交</h4>
+          </div>
+          <div class="modal-body">
+            <p>请确认后提交&hellip;</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="button" class="btn btn-primary" onclick="Irrelevant()">确定</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    
 	<input style="display:none" id="incidenttype" value="<s:property value="incidenttype"/>"/>
 	<script>
 	var incidenttype = document.getElementById("incidenttype").value;
@@ -431,7 +451,27 @@ String location = (String)session.getAttribute("location");
 	</script>
 	
 	<script type="text/javascript">
-	
+	$("#restart").click(function(){
+		var incidenttype = document.getElementById("incidenttype").value;
+		//alert($.query.get('dbname'));
+		//alert($.query.get('newsid'));
+		//alert(incidenttype);
+		//alert($("#triggerWord").val());
+		var eventType = incidenttype;
+		var triggerWord = $("#triggerWord").val();
+		var dbname = $.query.get('dbname');
+		var newsid = $.query.get('newsid');
+		var state = $.query.get('state');
+		if(document.getElementById("eventType").value.length==0)alert("请确认事件类型后再提交");
+		else if($("#triggerWord").val().length==0){
+			alert("请确认触发词后提交");
+		}
+		else{
+			restart('restart',dbname,newsid,triggerWord,eventType,state);
+			//alert($('#username').get(0).innerText);
+			//document.getElementById("change").setAttribute("disabled", "true");
+		}
+	});
 	$(".suggest").bsSuggest({
          //url: "/rest/sys/getuserlist?keyword=",
         url: "jsp/mark/datajson/incidentdata.json",
