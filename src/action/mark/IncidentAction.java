@@ -226,11 +226,12 @@ public class IncidentAction extends ActionSupport implements Action{
 	    //System.out.println(label.eventTime);
 	    //System.out.println(label.eventLocation);
 	    //System.out.println(jo.get(Integer.toString(label.eventType)));
-	    //强制将if_remark设置为不可更改
-	    label.if_remark=0;
 	    if_commit = news.getState()==1?1:0;
 	    if_relevant = news.getState()==2?1:0;
 		if(label!=null){
+			//强制将if_remark设置为不可更改
+			if(authority==0)
+				label.if_remark=0;
 	    	if(label.if_remark==1){
 	    		label=connectLabelDB.GetFormalLabelByNewsID(news.getId(), dbname);
 	    		marker_name = label.marker_name;
@@ -242,8 +243,8 @@ public class IncidentAction extends ActionSupport implements Action{
 	    		session.put("incident", jo.get("21"));
 	    	}
 	    	else{
-	    		incidenttype = label.eventType;
-	    		session.put("incident", jo.get(Integer.toString(label.eventType)));
+	    		incidenttype = label.eventType==0?21:label.eventType;
+	    		session.put("incident", jo.get(Integer.toString(incidenttype)));
 	    	}
 	    	session.put("sponsor",label.sourceActor);
 	    	session.put("triggerWord",label.triggerWord);

@@ -452,7 +452,6 @@ String location = (String)session.getAttribute("location");
 	
 	<script type="text/javascript">
 	$("#restart").click(function(){
-		var incidenttype = document.getElementById("incidenttype").value;
 		//alert($.query.get('dbname'));
 		//alert($.query.get('newsid'));
 		//alert(incidenttype);

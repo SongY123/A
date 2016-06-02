@@ -15,9 +15,9 @@
 	<!-- 数据源配置 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
         <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>  
-        <property name="url" value="jdbc:mysql://114.212.190.58:3306/webnews"></property>  
+        <property name="url" value="jdbc:mysql://localhost:3306/webnews"></property>  
         <property name="username" value="root"></property>  
-        <property name="password" value="123456"></property>  
+        <property name="password" value="password"></property>  
     </bean>
     
     <!-- 定义Spring JDBC模板类bean -->  
@@ -139,18 +139,18 @@
 	</bean>
 
 	<!-- Other -->
-	<bean id="dependencyParser_LTP" class="Java_EventDetection_News.RoleExtract.DependencyParser_LTP">
-	</bean>
-	<bean id="preprocess" class="Java_EventDetection_News.RoleExtract.Preprocess" init-method="init">
+	<bean id="preprocess" class="Java_EventDetection_News.RoleExtract.Preprocess">
 		<property name="connectLabelDB" ref="connectLabelDB"></property>
+	</bean>
+	<bean id="dependencyParser_LTP" class="Java_EventDetection_News.RoleExtract.DependencyParser_LTP">
 	</bean>
 	<bean id="based_rule" class="Java_EventDetection_News.RoleExtract.Based_rule">
 		<property name="connectLabelDB" ref="connectLabelDB"></property>
-		<property name="dependencyParser_LTP" ref="dependencyParser_LTP"></property>
 		<property name="preprocess" ref="preprocess"></property>
+		<property name="dependencyParser_LTP" ref="dependencyParser_LTP"></property>
 	</bean>
 	
-	<bean id="restartAction" class = "action.mark.RestartAction">
+	<bean id="restartAction" class = "action.mark.RestartAction" init-method="init">
 		<property name="connectLabelDB" ref="connectLabelDB"></property>
 		<property name="based_rule" ref="based_rule"></property>
 	</bean>

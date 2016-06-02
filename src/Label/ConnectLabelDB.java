@@ -144,6 +144,7 @@ CREATE TABLE `label_formal_data` (
 			String query ="UPDATE label_temp_data set source_actor="+"\""+source+"\""+",trigger_word="+"\""+trigger+"\""+",target_actor="+"\""
 			+target+"\""+",event_type="+type+",mark_time="+"\""+date.toString()+"\""+",if_event=1 where news_id="+news_id+" "
 					+ "and news_source="+"\""+news_source+"\"";
+			System.out.println(query);
 			jdbcTemplate.execute(query);
 		}
 		catch (Exception e) 
