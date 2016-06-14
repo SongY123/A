@@ -1,26 +1,35 @@
-package Java_EventDetection_News.RoleExtract;
+ï»¿package Java_EventDetection_News.RoleExtract;
 
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import com.sun.rowset.internal.Row;
+
 import Label.ConnectLabelDB;
 import edu.hit.ir.ltp4j.Pair;
 
-
 public class Preprocess {
-	  ArrayList<String> Ltpposvalue = new ArrayList<String>();
-	  ArrayList<String> Pand = new ArrayList<String>();
-	  ArrayList<String> Pdui = new ArrayList<String>();
-	  ArrayList<String> Pzai = new ArrayList<String>();
-	  ArrayList<String> Pbei = new ArrayList<String>();
-	  ArrayList<String> T1 = new ArrayList<String>();
-	  ArrayList<String> Posvalue = new ArrayList<String>();
-	  ArrayList<String> Segvalue = new ArrayList<String>();
-	  ArrayList<String> Posvalue1 = new ArrayList<String>();
-	  ArrayList<String> Pparticular = new ArrayList<String>();
-	  private ConnectLabelDB connectLabelDB ;
+	private ConnectLabelDB connectLabelDB ;
+	private   ArrayList<String> Potherpos = new ArrayList<String>();
+	private  ArrayList<String> T1paticular = new ArrayList<String>();
+	private ArrayList<String> Ltpposvalue = new ArrayList<String>();
+	private ArrayList<String> Pand = new ArrayList<String>();
+	private ArrayList<String> Pdui = new ArrayList<String>();
+	private ArrayList<String> Pzai = new ArrayList<String>();
+	private ArrayList<String> Pbei = new ArrayList<String>();
+	private ArrayList<String> T1 = new ArrayList<String>();
+	private ArrayList<String> Posvalue = new ArrayList<String>();
+	private ArrayList<String> Segvalue = new ArrayList<String>();
+	private ArrayList<String> Posvalue1 = new ArrayList<String>();
+	private ArrayList<String> Pparticular = new ArrayList<String>();
+
+	public static void main(String[]args) throws SQLException, IOException{
+	
+		List<Pair<String, String>> seg_tag_before = new ArrayList();
+		System.out.println(seg_tag_before);
+	}
 	  
 	  public ConnectLabelDB getConnectLabelDB() {
 		  return connectLabelDB;
@@ -28,17 +37,18 @@ public class Preprocess {
 	  public void setConnectLabelDB(ConnectLabelDB connectLabelDB) {
 		  this.connectLabelDB = connectLabelDB;
 	  }
-	public void init() {
-		System.out.println('a');
+	  public void init() {
+//		  System.out.println('a');
 		  SetPword();
-		  System.out.println('b');
+//		  System.out.println('b');
 	  }
 	/**
-	 * ÅĞ¶ÏwordÊÇ·ñÔÚwordlistÖĞ
+	 * åˆ¤æ–­wordæ˜¯å¦åœ¨wordlistä¸­
 	 * @param word
 	 * @param wordlist
 	 * @return
 	 */
+	
 	public  boolean Settag(String word,ArrayList<String> wordlist){
 		boolean tag = false;
 		for(int i=0;i<wordlist.size();i++){
@@ -52,18 +62,22 @@ public class Preprocess {
 	
 	
 	public  void SetPword(){
-		String []zai = {"ÔÚ","ÓÚ","¾Í","×¤","ÅÉ","ÓÃ","Èë","Òò"};
-		String []and = {"ºÍ","Óë","Í¬","¼°"};
-		String []dui = {"¶Ô","Ïò","Áî","Ê¹","°Ñ","½«","´Ó","Îª"};
-		String []bei = {"±»","Ôâ","ÊÜ","»ñ","Òı"};
-		String []particular = {"³¯","°Ä","Ãå","ÍÁ","Ğğ"};
-		String []t1 = {"Ëµ","Ğû²¼","»ØÓ¦","·¢±í","Ö¸³ö","³Æ","ÆØ",":","£º","±íÊ¾","Ö¸³ö","·¢²¼"};
-		String []posvalue = {"ÈËÃû","µØÃû","¹ú¼ÒÃû","»ú¹¹Ãû","½ÇÉ«Ãû","Ãû´Ê"};	
-		String []posvalue1 = {"·½Î»´Ê","Á¿´Ê","Êı´Ê","×ÖÄ¸×¨Ãû","ºó×º","´ú´Ê","×¨ÓĞÃû´Ê","Ö¸Ê¾´ú´Ê","ÈË³Æ´ú´Ê"};	//
-		String []segvalue = {"Å®","ÄĞ","×ó","ÓÒ","ÉÏ","ÏÂ","Ç°","ºó"};	
-		String []ltpposvalue = {"nh","j","ni","nl","nz","ns","ws"};
-		
-		Fill(ltpposvalue,Ltpposvalue);
+		String []zai = {"åœ¨","äº","å°±","é©»","æ´¾","ç”¨","å…¥","å› "};
+		String []and = {"å’Œ","ä¸","åŒ","åŠ"};
+		String []dui = {"å¯¹","å‘","ä»¤","ä½¿","æŠŠ","å°†","ä»","ä¸º"};
+		String []bei = {"è¢«","é­","å—","è·","å¼•"};
+		String []particular = {"æœ","æ¾³","ç¼…","åœŸ","å™"};
+		String []t1 = {"è¯´","å®£å¸ƒ","å›åº”","å‘è¡¨","æŒ‡å‡º","ç§°","æ›",":","ï¼š","è¡¨ç¤º","æŒ‡å‡º","å‘å¸ƒ","åŒæ„","è®¡åˆ’","æ‰“ç®—","å£°ç§°"};
+		String []posvalue = {"äººå","åœ°å","å›½å®¶å","æœºæ„å","è§’è‰²å","åè¯"};	
+		String []posvalue1 = {"æ–¹ä½è¯","é‡è¯","æ•°è¯","å­—æ¯ä¸“å","åç¼€","ä»£è¯","ä¸“æœ‰åè¯","æŒ‡ç¤ºä»£è¯","äººç§°ä»£è¯"};	//
+		String []segvalue = {"å¥³","ç”·","å‰¯","æ­£"};	
+		String []ltpposvalue = {"nh","j","ni","nz","ns","ws","nr","ndev"};//äººåï¼Œç¼©å†™ï¼Œç»„ç»‡åï¼Œä½ç½®ï¼Œåœ°ç†ä½ç½®ï¼Œå¤–æ¥åè¯ï¼Œè§’è‰²å
+		String []t1paticular = {"è¯´","å®£å¸ƒ","æŒ‡å‡º","ç§°","æ›",":","ï¼š","è®¡åˆ’","æ‰“ç®—","å£°ç§°"};
+		String []potherpos = {"ADV","ATT","CMP","COO","LAD","RAD"};//
+
+		Fill(t1paticular,T1paticular);
+		Fill(potherpos, Potherpos);
+		Fill(ltpposvalue,getLtpposvalue());
 		Fill(posvalue1,Posvalue1);
 		Fill(segvalue,Segvalue);
 		Fill(posvalue,Posvalue);
@@ -71,12 +85,12 @@ public class Preprocess {
 		Fill(and,Pand);
 		Fill(dui,Pdui);
 		Fill(bei,Pbei);
-		Fill(t1,T1);
+		Fill(t1,getT1());
 		Fill(particular,Pparticular);
 	}
 	
 	/**
-	 * ÓÃwords[]Ìî³äwordlist
+	 * ç”¨words[]å¡«å……wordlist
 	 * @param words
 	 * @param wordlist
 	 */
@@ -88,7 +102,50 @@ public class Preprocess {
 	}
 	
 	/**
-	 * ¶¯Ì¬Êı×é×ªÎªÊı×é
+	 * åœ¨wordlistä¸­å¯»æ‰¾word
+	 * @param word
+	 * @param wordlist
+	 * @return
+	 */
+	public  int Findpos(String word,ArrayList<String> wordlist){
+		int pos = -1;
+		for(int i=0;i<wordlist.size();i++){
+			if(wordlist.get(i).equals(word)){
+				pos = i;
+				break;
+			}
+		}
+		return pos;
+	}
+	
+	
+	/**
+	 * List2ArrayList,å°†è”åˆæ•°ç»„åˆ†åˆ«å¤åˆ¶ç»™ä¸¤ä¸ªå•ç‹¬çš„æ•°ç»„
+	 * @param seg_tag_before
+	 * @param newseg
+	 * @param newspos
+	 */
+	public  void List2ArryList(List<Pair<String, String>> seg_tag_before,ArrayList<String> newseg,ArrayList<String> newspos){
+		for(int i=0;i<seg_tag_before.size();i++){
+			newspos.add(seg_tag_before.get(i).second);
+			newseg.add(seg_tag_before.get(i).first);
+		}
+	}
+	
+	/**
+	 * åŠ¨æ€é“¾è¡¨å¤åˆ¶ç»™æ•°ç»„
+	 * @param seg_tag
+	 * @param newseg
+	 * @param newspos
+	 */
+	public  void List2Arry(List<Pair<String, String>> seg_tag,String[]newseg,String[]newspos){
+		for(int i=0;i<seg_tag.size();i++){
+			newspos[i] = seg_tag.get(i).second;
+			newseg[i] = seg_tag.get(i).first;
+		}
+	}
+	/**
+	 * åŠ¨æ€æ•°ç»„è½¬ä¸ºæ•°ç»„
 	 * @param newseg
 	 * @param seg
 	 */
@@ -101,70 +158,99 @@ public class Preprocess {
 	
 	
 	/**
-	 * Ô¤´¦Àí£¬È¥µôÒ»Ğ©ÀÛ×¸´Ê
+	 * é¢„å¤„ç†ï¼Œå»æ‰ä¸€äº›ç´¯èµ˜è¯
 	 * @param newsInput
 	 * @return
 	 */
 	public  String preInput(String newsInput){
 		String s = "";
-		if(newsInput.endsWith("ÆµµÀ")){
-		    newsInput = newsInput.substring(0,newsInput.indexOf("ÆµµÀ")-2).trim();
+		if(newsInput.endsWith("é¢‘é“")){
+		    newsInput = newsInput.substring(0,newsInput.indexOf("é¢‘é“")-2).trim();
 		}
-		if(newsInput.contains("£¨¸ßÇå×éÍ¼£©")){
-			newsInput = newsInput.replace("£¨¸ßÇå×éÍ¼£©", "");
+		if(newsInput.contains("ï¼ˆé«˜æ¸…ç»„å›¾ï¼‰")){
+			newsInput = newsInput.replace("ï¼ˆé«˜æ¸…ç»„å›¾ï¼‰", "");
 		}
-		if(newsInput.contains("£¨×éÍ¼£©")){
-			newsInput = newsInput.replace("£¨×éÍ¼£©", "");
+		if(newsInput.contains("ï¼ˆç»„å›¾ï¼‰")){
+			newsInput = newsInput.replace("ï¼ˆç»„å›¾ï¼‰", "");
 		}
-		if(newsInput.contains("£¨Í¼£©")){
-			newsInput = newsInput.replace("£¨Í¼£©", "");
+		if(newsInput.contains("ï¼ˆå›¾ï¼‰")){
+			newsInput = newsInput.replace("ï¼ˆå›¾ï¼‰", "");
 		}
-		if(newsInput.contains("£¨¸ßÇå£©")){
-			newsInput = newsInput.replace("£¨¸ßÇå£©", "");
+		if(newsInput.contains("ï¼ˆé«˜æ¸…ï¼‰")){
+			newsInput = newsInput.replace("ï¼ˆé«˜æ¸…ï¼‰", "");
 		}
-		if(newsInput.contains("(Í¼)")){
-			newsInput = newsInput.replace("(Í¼)", "");
+		if(newsInput.contains("(å›¾)")){
+			newsInput = newsInput.replace("(å›¾)", "");
 		}
 		
-		s = newsInput;
+		s = newsInput.replaceAll(" ", "ï¼Œ");
 		return s;
 	}
+
 	/**
-	 * ½øĞĞÖØ·Ö´Ê
+	 * è¿›è¡Œé‡åˆ†è¯
 	 * @param words
 	 * @param postags
+	 * @return 
 	 * @throws SQLException 
 	 */
 	public  void processLTP(List<String> words, List<String> postags,List<String> newwords, List<String> newpostags) throws SQLException {
 		// TODO Auto-generated method stub
-		SetPword();
+//		String []Role = {"ç»„ç»‡","è®ºå›","è¿åŠ¨","å›¢ä½“","è”ç›Ÿ","å¸‚åœº","ä¸­å¿ƒ","å…š","é“¶è¡Œ","åª’"}; 
+//		System.out.println("é¢„å¤„ç†ä¹‹å‰ï¼š");
+//		for(int i=start;i<end;i++){
+//			System.out.print(segresult[i]+"/"+pos[i]+"  ");
+//		}
+//		System.out.println();
+		
+		List<Map<String, Object>> sn = this.connectLabelDB.searchall();
+		List <Pair<String, String>>database = new ArrayList();
+		for(int i=0;i<sn.size();i++){
+			Pair<String, String> element = new Pair<String,String>((String)sn.get(i).get("nername"),(String)sn.get(i).get("relatingtable"));
+			database.add(element);
+		}
 		String segresult[] = new String[words.size()];
 		String pos[] = new String[words.size()];
 		Arraylist2Array((ArrayList<String>) words,segresult);
 		Arraylist2Array((ArrayList<String>) postags,pos);
 
+
 		for(int i=0;i<words.size();i++){
-			if(Settag(pos[i],Ltpposvalue )){
+			if(Settag(pos[i],getLtpposvalue() )){
 				continue;
 			}else if(Settag(segresult[i], Pparticular)){
 				pos[i] = "ns";
-			}else if(!connectLabelDB.isActor(segresult[i]).equals("")){
-				String table = connectLabelDB.isActor(segresult[i]);
+			}else if(!this.connectLabelDB.IsActor(segresult[i]).equals("")){
+				String table = this.connectLabelDB.IsActor(segresult[i]);
 				if(table.equals("countryinfor")||table.equals("regioninfor")){
-					//µ±Ç°ÊµÌå±êÊ¶ÎªµØÃû
+					//å½“å‰å®ä½“æ ‡è¯†ä¸ºåœ°å
 					pos[i] = "ns";
 				}else if(table.equals("roleinfor")){
-					//µ±Ç°ÊµÌå±êÊ¶Îª×éÖ¯Ãû
+					//å½“å‰å®ä½“æ ‡è¯†ä¸ºç»„ç»‡å
 					pos[i] = "ni";
 				}else if(table.equals("personinfor")){
-					//µ±Ç°ÊµÌå±êÊ¶ÎªÈËÃû
+					//å½“å‰å®ä½“æ ‡è¯†ä¸ºäººå
 					pos[i] = "nh";
 				}
 			}
 		}
+		
+		ReconstructWord_Pos(segresult,pos,words.size(),newwords,newpostags);
+	}
+	/**
+	 * é‡æ–°æ„å»ºWord_Pos
+	 * @param segresult
+	 * @param pos
+	 * @param size
+	 * @param newwords
+	 * @param newpostags
+	 */
+	public  void ReconstructWord_Pos(String[] segresult, String[] pos,
+			int size, List<String> newwords, List<String> newpostags) {
+		// TODO Auto-generated method stub
 		ArrayList <String>newseg0 = new ArrayList<String>();
 		ArrayList <String>newpos0 = new ArrayList<String>();
-		Afresh_Seg_LTP(segresult,pos,0,words.size(),newseg0,newpos0);
+		Afresh_Seg_LTP(segresult,pos,0,size,newseg0,newpos0);
 		
 		String newsegment[] = new String[newseg0.size()];
 		String newtag[] = new String[newseg0.size()];
@@ -174,13 +260,16 @@ public class Preprocess {
 			String poString = newpos0.get(i);
 			newtag[i] = poString;
 		}
-//		System.out.println("µÚÒ»´ÎÖØ·Ö´ÊÖ®ºó£º");	
+//		System.out.println("ç¬¬ä¸€æ¬¡é‡åˆ†è¯ä¹‹ånewseg0ï¼š"+newseg0);	
+//		System.out.println("ç¬¬ä¸€æ¬¡é‡åˆ†è¯ä¹‹ånewpos0ï¼š"+newpos0);	
+
 		ArrayList <String>newseg = new ArrayList<String>();
 		ArrayList <String>newpos  = new ArrayList<String>();
 		Afresh_Seg_LTP(newsegment,newtag,0,newtag.length,newwords,newpostags);
 	}
+
 	/**
-	 * ¸ù¾İ¹æÔòºÍÊµÌå±í£¬½øĞĞÖØ·Ö´Ê
+	 * æ ¹æ®è§„åˆ™å’Œå®ä½“è¡¨ï¼Œè¿›è¡Œé‡åˆ†è¯
 	 * @param segment
 	 * @param pos
 	 * @param start
@@ -189,60 +278,136 @@ public class Preprocess {
 	 * @param newpos
 	 */
 	public  void Afresh_Seg_LTP(String segment[],String pos[],int start,int end,List newseg,List newpos ){
-		//ÖØ·Ö´Ê
-//		for(String s:segment)System.out.println(s);
 		for(int i=start;i<end;i++){		
 			String compoundpos = pos[i];
 			String compound = segment[i];
-			//System.out.println("µ±Ç°ÊµÌå£º"+compound);
-			if(Settag(compoundpos,Ltpposvalue)||Settag(compound,Segvalue)){//µ±Ç°´ÊÎªÊµÌå
-			//	System.out.println("µ±Ç°ÊµÌå£º"+compound);
+			if(Settag(compoundpos,getLtpposvalue())){//å½“å‰è¯ä¸ºå®ä½“
+				//	System.out.println("å½“å‰å®ä½“ï¼š"+compound);						
 				for(int j=i+1;j<end;j++){
-					if(Settag(pos[j],Ltpposvalue)||Settag(segment[j],Segvalue)){
-				//	System.out.println("µ±Ç°ÊµÌå11£º"+segment[j]);
+					if(Settag(pos[j],getLtpposvalue())){
+					//	System.out.println("å½“å‰å®ä½“11ï¼š"+segment[j]);
 						compound += segment[j];
 						compoundpos = pos[j];
 						i = j;
 					}
 					else {i = j-1;break;}
 				}
-				if(!Settag(compoundpos,Ltpposvalue))compoundpos = "n";
-			}else if(compound.equals("¡°")){
-				for(int j=i+1;j<end;j++){
-					if(!segment[j].equals("¡±")){compound += segment[j];}
-						//System.out.println("µ±Ç°ÊµÌå11£º"+segment[j]);
-					else{
-						compound += segment[j];
-						i = j;
-						break;
-					}
-				}
-				compoundpos = "n";
-			}else if(compound.equals("\"")){
-				for(int j=i+1;j<end;j++){
-					if(!segment[j].equals("\"")){compound += segment[j];}
-						//System.out.println("µ±Ç°ÊµÌå11£º"+segment[j]);
-					else{
-						compound += segment[j];
-						i = j;
-						break;
-					}
-				}
-				compoundpos = "n";
-			}else if(compound.equals("¡¶")){
-				for(int j=i+1;j<end;j++){
-					if(!segment[j].equals("¡·")){compound += segment[j];}
-						//System.out.println("µ±Ç°ÊµÌå11£º"+segment[j]);
-					else{
-						compound += segment[j];
-						i = j;
-						break;
-					}
-				}
-				compoundpos = "n";
+			}else if(compoundpos.equals("b")&&i<end-1&&pos[i+1].equals("nr")){//å‰¯è¯+è§’è‰²->nh
+				compound = compound.concat(segment[i+1]);
+				compoundpos = "nh";
+				i++;
 			}
+			else if(i<end-1&&pos[i+1].equals("nr")&&segment[i+1].length()==1){//å‰ç¼€+å•ä½é•¿åº¦è§’è‰²role
+				compound = compound.concat(segment[i+1]);
+				compoundpos = "nh";
+				i++;
+			}
+			//System.out.println("å½“å‰å®ä½“ï¼š"+compound);
+			else if(i<end-1&&pos[i+1].equals("ndev")&&segment[i+1].length()==1){//å‰ç¼€+å•ä½é•¿åº¦device
+				compound = compound.concat(segment[i+1]);
+				compoundpos = "nh";
+				i++;
+			}
+			if(compoundpos.equals("nr")||compoundpos.equals("ndev"))compoundpos = "nh";//role->nh,device->nh	
 			newseg.add(compound);
 			newpos.add(compoundpos);
 		}
 	}
+
+	public ArrayList<String> getPotherpos() {
+		return Potherpos;
+	}
+
+	public void setPotherpos(ArrayList<String> potherpos) {
+		Potherpos = potherpos;
+	}
+
+	public ArrayList<String> getT1paticular() {
+		return T1paticular;
+	}
+
+	public void setT1paticular(ArrayList<String> t1paticular) {
+		T1paticular = t1paticular;
+	}
+
+	public ArrayList<String> getPand() {
+		return Pand;
+	}
+
+	public void setPand(ArrayList<String> pand) {
+		Pand = pand;
+	}
+
+	public ArrayList<String> getPdui() {
+		return Pdui;
+	}
+
+	public void setPdui(ArrayList<String> pdui) {
+		Pdui = pdui;
+	}
+
+	public ArrayList<String> getPzai() {
+		return Pzai;
+	}
+
+	public void setPzai(ArrayList<String> pzai) {
+		Pzai = pzai;
+	}
+
+	public ArrayList<String> getPbei() {
+		return Pbei;
+	}
+
+	public void setPbei(ArrayList<String> pbei) {
+		Pbei = pbei;
+	}
+
+	public ArrayList<String> getPosvalue() {
+		return Posvalue;
+	}
+
+	public void setPosvalue(ArrayList<String> posvalue) {
+		Posvalue = posvalue;
+	}
+
+	public ArrayList<String> getSegvalue() {
+		return Segvalue;
+	}
+
+	public void setSegvalue(ArrayList<String> segvalue) {
+		Segvalue = segvalue;
+	}
+
+	public ArrayList<String> getPosvalue1() {
+		return Posvalue1;
+	}
+
+	public void setPosvalue1(ArrayList<String> posvalue1) {
+		Posvalue1 = posvalue1;
+	}
+
+	public ArrayList<String> getPparticular() {
+		return Pparticular;
+	}
+
+	public void setPparticular(ArrayList<String> pparticular) {
+		Pparticular = pparticular;
+	}
+
+	public ArrayList<String> getLtpposvalue() {
+		return Ltpposvalue;
+	}
+
+	public void setLtpposvalue(ArrayList<String> ltpposvalue) {
+		Ltpposvalue = ltpposvalue;
+	}
+
+	public ArrayList<String> getT1() {
+		return T1;
+	}
+
+	public void setT1(ArrayList<String> t1) {
+		T1 = t1;
+	}
+	
 }

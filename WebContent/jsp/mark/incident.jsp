@@ -228,20 +228,48 @@ String location = (String)session.getAttribute("location");
 						</div>
 					</div>
 				</td>
-				<td class="col-xs-8">	
-                 </td>
+				<td class="col-xs-8">
+					<div class="input-group">
+                 		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                             	 动作<span class="caret"></span>
+                 		</button>
+                			<ul class="dropdown-menu">
+                    			<li><a href = "javascript:void(0)" onclick="dropincident(this)">删除</a></li>
+                        		<li><a href = "javascript:void(0)" onclick="addincident(this)">增加</a></li>
+                    		</ul>
+                	</div>	
+                </td>
 			</tr>
 			
 			<!-- 发起者  -->
 			<tr class="row" >
 				<td class="col-xs-12" style="border-top:0px">
 					<div class="input-group">
-					<span class="input-group-addon sponsor">发起者</span>
+					<span type="button" class="input-group-addon sponsor">发起者</span>
                     <input type="text" id="sponsor" class="form-control" value="<%if(!(sponsor==null||(sponsor!=null&&sponsor.equals("null"))))out.print(sponsor);%>">
+					<span class="input-group-addon sponsor">类型</span>
+					<input type="text" class="form-control sponsor-suggest" value="人物"/>
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            </ul>
+						</div>
 					</div>
 				</td>
 				
-				<td class="col-xs-8"  style="border-top:0px"></td>
+				<td class="col-xs-8"  style="border-top:0px">
+					<div class="input-group">
+                 		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                             	 动作<span class="caret"></span>
+                 		</button>
+                			<ul class="dropdown-menu">
+                    			<li><a href = "javascript:void(0)" onclick="dropline(this)">删除</a></li>
+                        		<li><a href = "javascript:void(0)" onclick="addline(this)">增加</a></li>
+                    		</ul>
+                	</div>
+				</td>
 			</tr>
 			
 			
@@ -264,17 +292,25 @@ String location = (String)session.getAttribute("location");
 					<div class="input-group">
 					<span class="input-group-addon bearer">承受者</span>
                     <input type="text" id="bearer" class="form-control" value="<%if(!(bearer==null||(bearer!=null&&bearer.equals("null"))))out.print(bearer);%>">
+					<span class="input-group-addon bearer">类型</span>
+					<input type="text" class="form-control bearer-suggest" value="人物"/>
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            </ul>
+						</div>
 					</div>
 				</td>
-				
 				<td class="col-xs-8" style="border-top:0px">
 					<div class="input-group">
                  		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                              	 动作<span class="caret"></span>
                  		</button>
                 			<ul class="dropdown-menu">
-                    			<li><a href = "javascript:void(0)" onclick="dropincident(this)">删除</a></li>
-                        		<li><a href = "javascript:void(0)" onclick="addincident(this)">增加</a></li>
+                    			<li><a href = "javascript:void(0)" onclick="dropline(this)">删除</a></li>
+                        		<li><a href = "javascript:void(0)" onclick="addline(this)">增加</a></li>
                     		</ul>
                 	</div>
 				</td>
@@ -332,7 +368,7 @@ String location = (String)session.getAttribute("location");
 				
 				<td class="col-xs-8">
 					<button type="button" id="change" class="btn btn-primary"  data-toggle="modal" data-target="#myModalChange">提交</button>&nbsp;&nbsp;&nbsp;&nbsp;
-					<button type="button" id="confirm" class="btn btn-primary" data-toggle="modal" data-target="#myModal">不相关</button>&nbsp;&nbsp;&nbsp;&nbsp;
+					<button type="button" id="irrelevant" class="btn btn-primary" data-toggle="modal" data-target="#myModalIrrelevant">不相关</button>&nbsp;&nbsp;&nbsp;&nbsp;
 					<button type="button" id="restart" class="btn btn-primary">重新抽取</button>
 				</td>
 			</tr>
@@ -357,7 +393,7 @@ String location = (String)session.getAttribute("location");
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary" onclick="Commit()">确定</button>
+            <button type="button" class="btn btn-primary" onclick="Change()">确定</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -380,30 +416,12 @@ String location = (String)session.getAttribute("location");
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-    
-    <div class="modal fade" id="myModalrestart">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">是否确定提交</h4>
-          </div>
-          <div class="modal-body">
-            <p>请确认后提交&hellip;</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button type="button" class="btn btn-primary" onclick="Irrelevant()">确定</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-    
+    	
 	<input style="display:none" id="incidenttype" value="<s:property value="incidenttype"/>"/>
 	<script>
 	var incidenttype = document.getElementById("incidenttype").value;
 	//alert(incidenttype);
-	function Commit(){
+	function Change(){
 		if(document.getElementById("eventType").value.length==0)alert("请确认事件类型后再提交");
 		else{
 			$.ajax({
@@ -438,7 +456,7 @@ String location = (String)session.getAttribute("location");
 					//alert(data);
 					$('#changeconfirm').get(0).innerText='不相关';
 					$('#changeconfirmtr').show();
-					$('#myModal').modal('hide');
+					$('#myModalIrrelevant').modal('hide');
 				}
 			});
 			//alert($('#username').get(0).innerText);
@@ -486,6 +504,38 @@ String location = (String)session.getAttribute("location");
     }).on('onUnsetSelectValue', function (e) {
         console.log("onUnsetSelectValue");
     });
+	
+	$(".bearer-suggest").bsSuggest({
+        //url: "/rest/sys/getuserlist?keyword=",
+       url: "jsp/mark/datajson/entitytypedata.json",
+       //showBtn: false,
+       indexKey: 1,
+       idField: "attribute1",
+ 		keyField:"attribute2"
+   }).on('onDataRequestSuccess', function (e, result) {
+       console.log('onDataRequestSuccess: ', result);
+   }).on('onSetSelectValue', function (e, keyword) {
+       console.log('onSetSelectValue: ', keyword);
+       incidenttype=keyword.id;
+   }).on('onUnsetSelectValue', function (e) {
+       console.log("onUnsetSelectValue");
+   });
+	
+	$(".sponsor-suggest").bsSuggest({
+        //url: "/rest/sys/getuserlist?keyword=",
+       url: "jsp/mark/datajson/entitytypedata.json",
+       //showBtn: false,
+       indexKey: 1,
+       idField: "attribute1",
+ 		keyField:"attribute2"
+   }).on('onDataRequestSuccess', function (e, result) {
+       console.log('onDataRequestSuccess: ', result);
+   }).on('onSetSelectValue', function (e, keyword) {
+       console.log('onSetSelectValue: ', keyword);
+       incidenttype=keyword.id;
+   }).on('onUnsetSelectValue', function (e) {
+       console.log("onUnsetSelectValue");
+   });
 	</script>
 	</body>
 </html>

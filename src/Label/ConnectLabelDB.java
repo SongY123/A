@@ -6,24 +6,29 @@ Created on 2015年10月19日 上午10:40:20
 @author: GreatShang
 */
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.LocatorEx.Snapshot;
 
-import org.apache.commons.dbcp.BasicDataSource;
+import edu.hit.ir.ltp4j.Pair;
+
 public class ConnectLabelDB 
 {
 	private JdbcTemplate jdbcTemplate;
 	
 	//////sql setting//////
 	public static String mysqlUser = "root";
-	public static String mysqlPassword = "password";
-	public static String databasePath = "jdbc:mysql://114.212.190.59:3306/webnews";
+	public static String mysqlPassword = "123456";
+	public static String databasePath = "jdbc:mysql://114.212.190.58:3306/webnews";
 	
 	///////sql local//////
 	private String queryString ;
@@ -93,7 +98,6 @@ CREATE TABLE `label_formal_data` (
 		this.jdbcTemplate = jdbcTemplate;
 	}
 	
-
 	/**向临时标注表添加自动化抽取结果
 	 * @LabelItem
 	 */
@@ -135,8 +139,19 @@ CREATE TABLE `label_formal_data` (
 	 * @param source
 	 * @param target
 	 */
+	/**
+	 * 更新数据库
+	 * @param news_id
+	 * @param news_source
+	 * @param title
+	 * @param trigger
+	 * @param type
+	 * @param source
+	 * @param target
+	 */
 	public  void  UpdateLabeltoTempTable(int news_id,String news_source,String title,String trigger,int type,String source,String target)
 	{
+//		System.out.println("UpdateLabeltoTempTable");
 		try 
 		{
 			java.util.Date date=new java.util.Date();
@@ -144,26 +159,49 @@ CREATE TABLE `label_formal_data` (
 			String query ="UPDATE label_temp_data set source_actor="+"\""+source+"\""+",trigger_word="+"\""+trigger+"\""+",target_actor="+"\""
 			+target+"\""+",event_type="+type+",mark_time="+"\""+date.toString()+"\""+",if_event=1 where news_id="+news_id+" "
 					+ "and news_source="+"\""+news_source+"\"";
-			System.out.println(query);
+//			System.out.println(query);
 			jdbcTemplate.execute(query);
+//			System.out.println("Update success.");
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
-			System.out.println("Update failed.");
+//			System.out.println("Update failed.");
 		}
 	}
 
-	/**从临时表中获取全部自动标注的数据
-	 * To Song Yang: 借口可用，从零时表中获取待标注数据，
+	/**
+	 * 遍历返回total表中所有数据
+	 * @return
+	 * @throws SQLException
 	 */
-	public String isActor(String segname)
-	{
-		
-		queryString =	"select * from totalinfor where totalinfor.nername ="+"\""+segname+"\"";
-//		System.out.println("queryString:"+queryString);
+	public  List<Map<String, Object>> searchall() throws SQLException{
+		queryString =	"select * from totalinfor where 1=1";
+		return jdbcTemplate.queryForList(queryString);
+	}
+	
+	/**
+	 * 返回实体表中所有的nername和relatingtable
+	 * @2016.06.02 daij
+	 * @throws SQLException 
+	 */
+	public  ArrayList<Pair<String, String>> selectnertable() throws SQLException {
+		// TODO Auto-generated method stub
+		ArrayList<Pair<String, String>> ner_table = new ArrayList<Pair<String, String>>();
+		List<Map<String, Object>> sn = searchall();
+		for(int i=0;i<sn.size();i++){
+			Pair<String, String> element = new Pair<String,String>((String)sn.get(i).get("nername"),(String)sn.get(i).get("relatingtable"));
+			ner_table.add(element);
+		}
+		return ner_table;
+	}
 
-		//where totalinfor.nername = "+segname;
+	/**找到segment在数据库中所在的表
+	 * @2016.06.02 daij
+	 */
+	public String IsActor(String segname)
+	{
+		queryString =	"select * from totalinfor where totalinfor.nername ="+"\""+segname+"\"";
 		String newsSource = "";
 		try 
 		{
@@ -175,6 +213,19 @@ CREATE TABLE `label_formal_data` (
 			e.printStackTrace();
 		}
 		return newsSource;
+	}
+	/**
+	 * 返回id_news集合
+	 * @author daij 2016.06.02
+	 * @param id
+	 * @param news_source
+	 * @return
+	 */
+	public List<Map<String, Object>> selectid_news(int news_id, String news_source) {
+		// TODO Auto-generated method stub
+		queryString =	"select * from label_temp_data where news_id = "+news_id+" and news_source = \""+news_source+"\"";
+//		System.out.println(queryString);
+		return jdbcTemplate.queryForList(queryString);
 	}
 	
 	/**

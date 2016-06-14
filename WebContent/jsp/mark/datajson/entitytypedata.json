@@ -1,0 +1,36 @@
+{
+	"message": "",
+	"value": [
+		{
+			"attribute1": "1",
+			"attribute2": "组织",
+			"attribute3": "orgnizationinfor"
+		}, {
+			"attribute1": "2",
+			"attribute2": "职位",
+			"attribute3": "roleinfor"
+		}, {
+			"attribute1": "3",
+			"attribute2": "设备",
+			"attribute3": "deviceinfor"
+		}, {
+			"attribute1": "4",
+			"attribute2": "地区",
+			"attribute3": "regioninfor"
+		}, {
+			"attribute1": "5",
+			"attribute2": "国家",
+			"attribute3": "countryinfor"
+		}, {
+			"attribute1": "6",
+			"attribute2": "人物",
+			"attribute3": "personinfor"
+		}, {
+			"attribute1": "7",
+			"attribute2": "其他",
+			"attribute3": "otherinfor"
+		}
+	],
+	"code": 200,
+	"redirect": ""
+}
