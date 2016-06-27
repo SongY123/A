@@ -20,7 +20,7 @@ import edu.hit.ir.ltp4j.NER;
 public class DependencyParser_LTP {
 	
 	public  void init(){
-		String root = "E:/WorkSpace/JavaWorkSpace/Annotation/othersource/dll_model/";
+		String root = "C:/dll_model/";
 	//	System.out.print(System.getProperty("java.library.path"));
 		//System.loadLibrary("dll");
 		//System.load(root+"dll/segmentor.dll"); 

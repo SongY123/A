@@ -14,7 +14,7 @@ $(document).ready(function(){
 	context.attach('#contenttext', [
 		
 		{header: '修改'},
-		{text: '重新分词',href:"#",action: function(e){
+		{text: '重新分词',href:"javasript:void(0);",action: function(e){
 			if(window.getSelection) { 
 				var textObj = document.getElementById("contenttext"); 
 				var selectedText = window.getSelection().toString(); 

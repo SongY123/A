@@ -629,7 +629,7 @@ public class Based_rule {
 //			System.out.println("actor[0]:"+actor[0]);
 //			System.out.println("actor[1]:"+actor[1]);
 
-			this.connectLabelDB.UpdateLabeltoTempTable(news_id,news_source,title,trigger,type, actor[0],actor[1]);
+			this.connectLabelDB.UpdateLabeltoTempTable(news_id,news_source,trigger,type, actor[0],actor[1],"","",null,null,null,null);
 		}else {
 	//		System.out.println("当前条目不存在");
 		}

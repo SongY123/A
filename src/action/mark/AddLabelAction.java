@@ -28,7 +28,8 @@ public class AddLabelAction extends ActionSupport implements Action{
 	private String triggerWord;
 	private String eventTime;
 	private String eventLocation;
-	
+	private String sourceActorPro;
+	private String targetActorPro;
 	private InputStream successString = new ByteArrayInputStream("SUCCESS".getBytes());
 	private InputStream errorString = new ByteArrayInputStream("ERROR".getBytes());
 	private String dbname;
@@ -77,6 +78,18 @@ public class AddLabelAction extends ActionSupport implements Action{
 	public void setEventLocation(String eventLocation) {
 		this.eventLocation = eventLocation;
 	}
+	public String getSourceActorPro() {
+		return sourceActorPro;
+	}
+	public void setSourceActorPro(String sourceActorPro) {
+		this.sourceActorPro = sourceActorPro;
+	}
+	public String getTargetActorPro() {
+		return targetActorPro;
+	}
+	public void setTargetActorPro(String targetActorPro) {
+		this.targetActorPro = targetActorPro;
+	}
 	public String getDbname() {
 		return dbname;
 	}
@@ -114,13 +127,27 @@ public class AddLabelAction extends ActionSupport implements Action{
 		System.out.println(eventType);
 		System.out.println(triggerWord);
 		System.out.println(username);
+		System.out.println(sourceActorPro);
+		System.out.println(targetActorPro);
 		LabelItem item = null;
 		if(eventType==21)//not event
 			item = new LabelItem(label.labelID, dbname, newsid, label.newsTitle);
-		else
+		else{
+			connectLabelDB.addtrigger(triggerWord);
+			String []source = sourceActor.split("_");
+			String []sourcetype = sourceActorPro.split("_");
+			for(int i = 0;i<source.length;i++)
+				connectLabelDB.addentity(source[i], sourcetype[i]);
+				
+			String []target = targetActor.split("_");
+			String []targettype = targetActorPro.split("_");
+			for(int i = 0;i<target.length;i++)
+				connectLabelDB.addentity(target[i], targettype[i]);
+			
 			item = new LabelItem(label.labelID, dbname, newsid, label.newsTitle,
-				eventType, sourceActor, targetActor, triggerWord, eventTime,
-				eventLocation);
+				eventType, sourceActor, targetActor, triggerWord, sourceActorPro, targetActorPro, eventTime,
+				eventLocation,null,null,null,null);
+		}
 		connectLabelDB.RemarkLabel(item, username);
 		return this.SUCCESS;
 	}

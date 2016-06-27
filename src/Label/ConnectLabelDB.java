@@ -17,6 +17,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
+import com.sun.corba.se.impl.ior.ObjectKeyFactoryImpl;
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.LocatorEx.Snapshot;
 
 import edu.hit.ir.ltp4j.Pair;
@@ -110,17 +111,17 @@ CREATE TABLE `label_formal_data` (
 			if(item.ifEvent)
 			{
 				queryString =	
-				"INSERT INTO label_temp_data (news_source,news_id,news_title,if_event,source_actor,trigger_word,target_actor,event_type,event_date,event_location,mark_time) "+
-				"VALUES('"+item.newsSource+"','"+item.newsID+"','"+item.newsTitle+"',1,'"+item.sourceActor+"','"+item.triggerWord+"','"+item.targetActor
-				+"',"+item.eventType+",'"+item.eventTime+"','"+item.eventLocation+"','"+date.toString()+"')";
-				jdbcTemplate.execute(queryString);
+				"INSERT INTO label_temp_data (news_source,news_id,news_title,if_event,source_actor,trigger_word,target_actor,event_type,event_date,event_location,mark_time,source_actorPro,target_actorPro,actor_index,actor_len,actor_Pro,actor) "+
+				"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				jdbcTemplate.update(queryString,new Object[]{item.newsSource,item.newsID,item.newsTitle,item.sourceActor,item.triggerWord,item.targetActor,
+						item.eventType,item.eventTime,item.eventLocation,date.toString(),item.sourceActorPro,item.targetActorPro,item.actor_index,item.actor_len,item.actor_Pro,item.actor});
 			}
 			else
 			{
 				queryString =
 				"insert into label_temp_data(news_source,news_id,news_title,if_event,mark_time)"+
-				"VALUES('"+item.newsSource+"','"+item.newsID+"','"+item.newsTitle+"', 0 ,'"+date.toString()+"')"; 
-				jdbcTemplate.execute(queryString);
+				"values(?,?,?,?,?)";
+				jdbcTemplate.update(queryString,new Object[]{item.newsSource,item.newsID,item.newsTitle,0,date.toString()});
 			}
 		} 
 		catch (Exception e) 
@@ -149,19 +150,17 @@ CREATE TABLE `label_formal_data` (
 	 * @param source
 	 * @param target
 	 */
-	public  void  UpdateLabeltoTempTable(int news_id,String news_source,String title,String trigger,int type,String source,String target)
+	public  void  UpdateLabeltoTempTable(int news_id,String news_source,String trigger,int type,String source,String target,String sourcePro,String targetPro,String actor_index,String actor_len,String actor_Pro,String actor)
 	{
 //		System.out.println("UpdateLabeltoTempTable");
 		try 
 		{
 			java.util.Date date=new java.util.Date();
 			date.getTime();
-			String query ="UPDATE label_temp_data set source_actor="+"\""+source+"\""+",trigger_word="+"\""+trigger+"\""+",target_actor="+"\""
-			+target+"\""+",event_type="+type+",mark_time="+"\""+date.toString()+"\""+",if_event=1 where news_id="+news_id+" "
-					+ "and news_source="+"\""+news_source+"\"";
-//			System.out.println(query);
-			jdbcTemplate.execute(query);
-//			System.out.println("Update success.");
+			String query ="UPDATE label_temp_data set source_actor=?,trigger_word=?,target_actor=?,source_actorPro=?,target_actorPro=?,"+
+			",event_type=?,mark_time=?,if_event=?,actor_index=?,actor_len=?,actor_Pro=?,actor=? where news_id=? and news_source=?";
+			jdbcTemplate.update(query,new Object[]{source,trigger,target,sourcePro,targetPro,type,date.toString(),1,actor_index, actor_len, actor_Pro,actor,news_id,news_source});
+			//System.out.println("Update success.");
 		}
 		catch (Exception e) 
 		{
@@ -227,30 +226,7 @@ CREATE TABLE `label_formal_data` (
 //		System.out.println(queryString);
 		return jdbcTemplate.queryForList(queryString);
 	}
-	
-	/**
-	 * 更新数据库
-	 * @param id
-	 * @param trigger
-	 * @param type
-	 * @param source 
-	 * @param target
-	 */
-	public  void  UpdateLabeltoTempTable(String news_id,String news_source,String trigger,int type,String source,String target)
-	{
-		try 
-		{
-			java.util.Date date=new java.util.Date();
-			date.getTime();
-			String query ="UPDATE label_temp_data set source_actor="+source+",trigger_word="+trigger+",target_actor="+target+",event_type="+type+"mark_time="+date.toString()+",if_event=1 where news_id="+news_id+" and news_source="+news_source;
-			jdbcTemplate.execute(query);
-		}
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-			System.out.println("Update failed.");
-		}
-	}
+
 	
 	/**向正式表中添加标注结果
 	 * 
@@ -267,25 +243,27 @@ CREATE TABLE `label_formal_data` (
 			queryString = "SELECT * FROM label_formal_data WHERE label_id="+item.labelID;
 			List rows = jdbcTemplate.queryForList(queryString);
 			if(rows.size()>0){
-				queryString = "UPDATE label_formal_data SET if_event="+item.ifEvent+",source_actor='"+item.sourceActor+"',trigger_word='"+item.triggerWord+"',target_actor='"+item.targetActor+"',event_type='"+item.eventType+
-						"',event_date='"+item.eventTime+"',event_location='"+item.eventLocation+"',marker_name='"+loginUser+"',mark_time='"+date.toString()+"' WHERE label_id= "+item.labelID+"";
-				jdbcTemplate.execute(queryString);
+				queryString = "UPDATE label_formal_data SET if_event=?,source_actor=?,trigger_word=?,target_actor=?,source_actorPro=?,target_actorPro=?,event_type=?"+
+						",event_date=?,event_location=?,marker_name=?,mark_time=? actor_index=?, actor_len=?, actor_Pro=? ,actor=? WHERE label_id=?";
+				jdbcTemplate.update(queryString, new Object[]{item.ifEvent,item.sourceActor,item.triggerWord,item.targetActor,item.sourceActorPro,item.targetActorPro,item.eventType,
+						item.eventTime,item.eventLocation,loginUser,date.toString(),item.actor_index,item.actor_len,item.actor_Pro,item.actor,item.labelID});
 			}
 			else{
 				if(item.ifEvent)
 				{
 					queryString =	
-					"INSERT INTO label_formal_data (label_id,news_source,news_id,news_title,if_event,source_actor,trigger_word,target_actor,event_type,event_date,event_location,marker_name,mark_time) "+
-					"VALUES("+item.labelID+",'"+item.newsSource+"',"+item.newsID+",'"+item.newsTitle+"',1,'"+item.sourceActor+"','"+item.triggerWord+"','"+item.targetActor
-					+"',"+item.eventType+",'"+item.eventTime+"','"+item.eventLocation+"','"+loginUser+"','"+date.toString()+"')";
-					jdbcTemplate.execute(queryString);
+					"INSERT INTO label_formal_data (label_id,news_source,news_id,news_title,if_event,source_actor,trigger_word,target_actor,source_actorPro,target_actorPro,event_type,event_date,event_location,marker_name,mark_time,actor_index,actor_len,actor_Pro,actor) "+
+					"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					jdbcTemplate.update(queryString, new Object[]{item.labelID,item.newsSource,item.newsID,item.newsTitle,1,item.sourceActor,item.triggerWord,item.targetActor,item.sourceActorPro,item.targetActorPro,
+							item.eventType,item.eventTime,item.eventLocation,loginUser,date.toString(),item.actor_index,item.actor_len,item.actor_Pro,item.actor});
 				}
 				else
 				{
-					queryString =
-					"insert into label_formal_data(label_id,news_source,news_id,news_title,if_event,marker_name,mark_time) values "
-					+ "("+item.labelID+",'"+item.newsSource+"',"+item.newsID+",'"+item.newsTitle+"', 0 ,'"+loginUser+"','"+date.toString()+"')"; 
-					jdbcTemplate.execute(queryString);
+					queryString =	
+							"INSERT INTO label_formal_data (label_id,news_source,news_id,news_title,if_event,source_actor,trigger_word,target_actor,source_actorPro,target_actorPro,event_type,event_date,event_location,marker_name,mark_time,actor_index,actor_len,actor_Pro,actor) "+
+							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+							jdbcTemplate.update(queryString, new Object[]{item.labelID,item.newsSource,item.newsID,item.newsTitle,0,item.sourceActor,item.triggerWord,item.targetActor,item.sourceActorPro,item.targetActorPro,
+									item.eventType,item.eventTime,item.eventLocation,loginUser,date.toString(),item.actor_index,item.actor_len,item.actor_Pro,item.actor});
 				}  
 				queryString = 
 						"UPDATE label_temp_data SET if_remark= 1 "+
@@ -448,7 +426,9 @@ CREATE TABLE `label_formal_data` (
 				{
 					label = new LabelItem(labelID,newsSource,newsID, newsTitle, (int)line.get("event_type"),
 							(String)line.get("source_actor"), (String)line.get("target_actor"), (String)line.get("trigger_word"),
-							(String)line.get("event_date"), (String)line.get("event_location"));
+							(String)line.get("source_actorPro"), (String)line.get("target_actorPro"),
+							(String)line.get("event_date"), (String)line.get("event_location"),(String)line.get("actor_index"),
+							(String)line.get("actor_len"),(String)line.get("actor_Pro"),(String)line.get("actor"));
 				}
 				seachResult.add(label);
 			}
@@ -497,7 +477,9 @@ CREATE TABLE `label_formal_data` (
 				{
 					label = new LabelItem(labelID,newsSource,newsID, newsTitle, (int)line.get("event_type"),
 							(String)line.get("source_actor"), (String)line.get("target_actor"), (String)line.get("trigger_word"),
-							(String)line.get("event_date"), (String)line.get("event_location"));
+							(String)line.get("source_actorPro"), (String)line.get("target_actorPro"),
+							(String)line.get("event_date"), (String)line.get("event_location"),(String)line.get("actor_index"),
+							(String)line.get("actor_len"),(String)line.get("actor_Pro"),(String)line.get("actor"));
 				}
 				seachResult.add(label);
 			}
@@ -543,7 +525,9 @@ CREATE TABLE `label_formal_data` (
 				{
 					label = new LabelItem(labelID,newsSource,newsID, newsTitle, (int)line.get("event_type"),
 							(String)line.get("source_actor"), (String)line.get("target_actor"), (String)line.get("trigger_word"),
-							(String)line.get("event_date"), (String)line.get("event_location"));
+							(String)line.get("source_actorPro"), (String)line.get("target_actorPro"),
+							(String)line.get("event_date"), (String)line.get("event_location"),(String)line.get("actor_index"),
+							(String)line.get("actor_len"),(String)line.get("actor_Pro"),(String)line.get("actor"));
 				}
 				seachResult.add(label);
 			}
@@ -585,7 +569,9 @@ CREATE TABLE `label_formal_data` (
 				{
 					label = new LabelItem(labelID,newsSource,newsID, newsTitle, (int)line.get("event_type"),
 							(String)line.get("source_actor"), (String)line.get("target_actor"), (String)line.get("trigger_word"),
-							(String)line.get("event_date"), (String)line.get("event_location"));
+							(String)line.get("source_actorPro"), (String)line.get("target_actorPro"),
+							(String)line.get("event_date"), (String)line.get("event_location"),(String)line.get("actor_index"),
+							(String)line.get("actor_len"),(String)line.get("actor_Pro"),(String)line.get("actor"));
 				}
 				int if_remark=(boolean)line.get("if_remark")==true?1:0;
 				label.if_remark = if_remark;
@@ -630,7 +616,9 @@ CREATE TABLE `label_formal_data` (
 				{
 					label = new LabelItem(labelID,newsSource,newsID, newsTitle, (int)line.get("event_type"),
 							(String)line.get("source_actor"), (String)line.get("target_actor"), (String)line.get("trigger_word"),
-							(String)line.get("event_date"), (String)line.get("event_location"));
+							(String)line.get("source_actorPro"), (String)line.get("target_actorPro"),
+							(String)line.get("event_date"), (String)line.get("event_location"),(String)line.get("actor_index"),
+							(String)line.get("actor_len"),(String)line.get("actor_Pro"),(String)line.get("actor"));
 				}
 				int if_remark=(boolean)line.get("if_remark")==true?1:0;
 				label.if_remark = if_remark;
@@ -675,7 +663,9 @@ CREATE TABLE `label_formal_data` (
 				{
 					label = new LabelItem(labelID,newsSource,newsID, newsTitle, (int)line.get("event_type"),
 							(String)line.get("source_actor"), (String)line.get("target_actor"), (String)line.get("trigger_word"),
-							(String)line.get("event_date"), (String)line.get("event_location"));
+							(String)line.get("source_actorPro"), (String)line.get("target_actorPro"),
+							(String)line.get("event_date"), (String)line.get("event_location"),(String)line.get("actor_index"),
+							(String)line.get("actor_len"),(String)line.get("actor_Pro"),(String)line.get("actor"));
 				}
 				int if_confirmed = (boolean)line.get("if_confirmed")==true?1:0;
 				label.if_remark = 1;
@@ -690,6 +680,57 @@ CREATE TABLE `label_formal_data` (
 			e.printStackTrace();
 		}
 		return null;
+	}
+	public void addtrigger(String trigger){
+		List rows = jdbcTemplate.queryForList("select * from triggerinfo where triggerstr=\""+trigger+"\"");
+		if(rows.size()==0)
+			jdbcTemplate.execute("insert into triggerinfo(triggerstr) values(\""+trigger+"\")");
+	}
+	public void addentity(String entityname,String entitytype){
+		List totalinfor = jdbcTemplate.queryForList("select * from totalinfor where nername=\""+entityname+"\"");
+		if(totalinfor.size()==0){
+			List totalinfor_temp = jdbcTemplate.queryForList("select * from totalinfor_temp where nername=\""+entityname+"\"");
+			if(totalinfor_temp.size()==0){
+				String actorid = "";
+				String relatingtable = entitytype;
+				if(entitytype.equals("countryinfor"))
+				{
+					jdbcTemplate.update("insert into countryinfor_temp(countryname) values(?)",new Object[]{entityname});
+					actorid = jdbcTemplate.queryForObject("select countryid from countryinfor_temp where countryname=\""+entityname+"\"", String.class);
+				}
+				else if(entitytype.equals("deviceinfor"))
+				{
+					jdbcTemplate.update("insert into deviceinfor_temp(devicename) values(?)",new Object[]{entityname});
+					actorid = jdbcTemplate.queryForObject("select deviceid from deviceinfor_temp where devicename=\""+entityname+"\"", String.class);
+				}
+				else if(entitytype.equals("orgnizationinfor"))
+				{
+					jdbcTemplate.update("insert into orgnizationinfor_temp(orgnizationname) values(?)",new Object[]{entityname});
+					actorid = jdbcTemplate.queryForObject("select orgnizationid from orgnizationinfor_temp where orgnizationname=\""+entityname+"\"", String.class);
+				}
+				else if(entitytype.equals("otherinfor"))
+				{
+					jdbcTemplate.update("insert into otherinfor_temp(othername) values(?)",new Object[]{entityname});
+					actorid = jdbcTemplate.queryForObject("select otherid from otherinfor_temp where othername=\""+entityname+"\"", String.class);
+				}
+				else if(entitytype.equals("regioninfor"))
+				{
+					jdbcTemplate.update("insert into regioninfor_temp(regionname) values(?)",new Object[]{entityname});
+					actorid = jdbcTemplate.queryForObject("select regionid from regioninfor_temp where regionname=\""+entityname+"\"", String.class);
+				}
+				else if(entitytype.equals("roleinfor"))
+				{
+					jdbcTemplate.update("insert into roleinfor_temp(rolename) values(?)",new Object[]{entityname});
+					actorid = jdbcTemplate.queryForObject("select roleid from roleinfor_temp where rolename=\""+entityname+"\"", String.class);
+				}
+				else if(entitytype.equals("personinfor"))
+				{
+					jdbcTemplate.update("insert into personinfor_temp(personname) values(?)",new Object[]{entityname});
+					actorid = jdbcTemplate.queryForObject("select personid from personinfor_temp where personname=\""+entityname+"\"", String.class);
+				}		
+				jdbcTemplate.update("insert into totalinfor_temp(nername, actorid, relatingtable) values(?,?,?)",new Object[]{entityname,actorid,entitytype+"_temp"});
+			}
+		}
 	}
 	
 	public static void main(String []args)

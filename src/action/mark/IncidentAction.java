@@ -247,18 +247,34 @@ public class IncidentAction extends ActionSupport implements Action{
 	    		session.put("incident", jo.get(Integer.toString(incidenttype)));
 	    	}
 	    	session.put("sponsor",label.sourceActor);
+	    	int sponsorlength = label.sourceActor==null?0:label.sourceActor.split("_").length;
+	    	String sponsortype=label.sourceActorPro;
+	    	session.put("sponsortype",sponsortype);
 	    	session.put("triggerWord",label.triggerWord);
 	    	session.put("bearer",label.targetActor);
+	    	int bearerlength = label.targetActor==null?0:label.targetActor.split("_").length;
+	    	String bearertype=label.targetActorPro;
+	    	session.put("bearertype",bearertype);
 	    	session.put("time",label.eventTime);
 	    	session.put("location",label.eventLocation);
+	    	session.put("actor_index",label.actor_index);
+	    	session.put("actor_len", label.actor_len);
+	    	session.put("actor_Pro", label.actor_Pro);
+	    	session.put("actor", label.actor);
 	    }
 	    else{
 	    	session.put("incident", null);
 	    	session.put("sponsor",null);
+	    	session.put("sponsortype",null);
 	    	session.put("triggerWord",null);
 	    	session.put("bearer",null);
+	    	session.put("bearertype",null);
 	    	session.put("time",null);
 	    	session.put("location",null);
+	    	session.put("actor_index",null);
+	    	session.put("actor_len", null);
+	    	session.put("actor_Pro", null);
+	    	session.put("actor", null);
 	    }
 		return this.SUCCESS;
 	}
