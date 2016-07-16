@@ -34,6 +34,10 @@
         <property name="jdbcTemplate" ref="jdbcTemplate" ></property>  
     </bean>  
     
+    <bean id="entityDao" class="dao.EntityDao">  
+        <property name="jdbcTemplate" ref="jdbcTemplate" ></property>  
+    </bean>  
+    
     <!-- dao-log -->
     <bean id="segLogDao" class="dao.SegLogDao">  
         <property name="jdbcTemplate" ref="jdbcTemplate" ></property>  
@@ -69,6 +73,14 @@
     
     <bean id="newsListService" class="service.NewsListService">  
         <property name="newsDao" ref="newsDao"></property>
+    </bean>
+    
+    <bean id="entityListService" class="service.EntityListService">  
+        <property name="entityDao" ref="entityDao"></property>
+    </bean>
+    
+    <bean id="entityService" class="service.EntityService">  
+        <property name="entityDao" ref="entityDao"></property>
     </bean>
     
     <bean id="findNewsService" class="service.FindNewsService">  
@@ -109,6 +121,10 @@
 		<property name="newsListService" ref="newsListService"></property>
 	</bean>
 	
+	<bean id="chooseentityAction" class="action.entity.ChooseentityAction">
+		<property name="entityListService" ref="entityListService"></property> 
+	</bean>
+	
 	<bean id="segmentationAction" class="action.mark.SegmentationAction">
 		<property name="markService" ref="markService"></property>
 		<property name="findNewsService" ref="findNewsService"></property>
@@ -134,6 +150,21 @@
 		<property name="loginService" ref="loginService"></property>
 	</bean>
 	
+	<bean id="entityActionFormal" class="action.entity.EntityAction">
+		<property name="entityService" ref="entityService"></property>
+	</bean>
+	<bean id="submitEntityAction" class="action.entity.SubmitEntityAction">
+		<property name="entityService" ref="entityService"></property>
+	</bean>
+	<bean id="deleteEntityAction" class="action.entity.DeleteEntityAction">
+		<property name="entityService" ref="entityService"></property>
+	</bean>
+	<bean id="addEntityAction" class="action.entity.AddEntityAction">
+		<property name="entityService" ref="entityService"></property>
+	</bean>
+	<bean id="postAllEntityAction" class = "action.entity.PostAllEntityAction">
+		<property name="entityService" ref="entityService"></property>
+	</bean>
 	<bean id="addLabelAction" class = "action.mark.AddLabelAction">
 		<property name="connectLabelDB" ref="connectLabelDB"></property>
 	</bean>

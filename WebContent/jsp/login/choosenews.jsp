@@ -81,6 +81,13 @@ String username = (String)session.getAttribute("username");
             			<li><a href="javascript:void(0);" id="getconfirmednews">不相关</a></li>
           			</ul>
         		</li>
+        		<li class="dropdown">
+          			<a href="chooseentity" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">实体列表 <span class="caret"></span></a>
+          			<ul class="dropdown-menu">
+          				<li><a href="javascript:void(0);" id="getformalentity">正式表</a></li>
+            			<li><a href="javascript:void(0);" id="gettempentity">临时表</a></li>
+          			</ul>
+        		</li>
         		<li><a href="statistics">统计</a></li>
      		</ul>
      		

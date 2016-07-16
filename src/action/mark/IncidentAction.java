@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Map;
 
 import javax.websocket.Session;
@@ -38,6 +39,7 @@ public class IncidentAction extends ActionSupport implements Action{
 	private String nextnewsid;//下一条新闻id
 	private String lastnewsid;//上一条新闻id
 	private int state;
+	private List<LabelItem> contentlist;
 	private LoginService loginService;
 	public ConnectLabelDB getConnectLabelDB() {
 		return connectLabelDB;
@@ -110,6 +112,15 @@ public class IncidentAction extends ActionSupport implements Action{
 	public void setIncidenttype(int incidenttype) {
 		this.incidenttype = incidenttype;
 	}
+	
+	public List<LabelItem> getContentlist() {
+		return contentlist;
+	}
+
+	public void setContentlist(List<LabelItem> contentlist) {
+		this.contentlist = contentlist;
+	}
+
 	public LoginService getLoginService() {
 		return loginService;
 	}
@@ -234,7 +245,7 @@ public class IncidentAction extends ActionSupport implements Action{
 				label.if_remark=0;
 	    	if(label.if_remark==1){
 	    		label=connectLabelDB.GetFormalLabelByNewsID(news.getId(), dbname);
-	    		marker_name = label.marker_name;
+	    		this.marker_name = label.marker_name;
 	    		System.out.println(marker_name);
 	    	}
 	    	System.out.println("if_remark="+if_commit+" if_relevant="+if_relevant);

@@ -30,6 +30,10 @@ public class AddLabelAction extends ActionSupport implements Action{
 	private String eventLocation;
 	private String sourceActorPro;
 	private String targetActorPro;
+	private String actorIndex;
+	private String actorLen;
+	private String actorPro;
+	private String actorName;
 	private InputStream successString = new ByteArrayInputStream("SUCCESS".getBytes());
 	private InputStream errorString = new ByteArrayInputStream("ERROR".getBytes());
 	private String dbname;
@@ -90,6 +94,30 @@ public class AddLabelAction extends ActionSupport implements Action{
 	public void setTargetActorPro(String targetActorPro) {
 		this.targetActorPro = targetActorPro;
 	}
+	public String getActorIndex() {
+		return actorIndex;
+	}
+	public void setActorIndex(String actorIndex) {
+		this.actorIndex = actorIndex;
+	}
+	public String getActorLen() {
+		return actorLen;
+	}
+	public void setActorLen(String actorLen) {
+		this.actorLen = actorLen;
+	}
+	public String getActorPro() {
+		return actorPro;
+	}
+	public void setActorPro(String actorPro) {
+		this.actorPro = actorPro;
+	}
+	public String getActorName() {
+		return actorName;
+	}
+	public void setActorName(String actorName) {
+		this.actorName = actorName;
+	}
 	public String getDbname() {
 		return dbname;
 	}
@@ -129,11 +157,16 @@ public class AddLabelAction extends ActionSupport implements Action{
 		System.out.println(username);
 		System.out.println(sourceActorPro);
 		System.out.println(targetActorPro);
+		System.out.println(actorIndex);
+		System.out.println(actorLen);
+		System.out.println(actorPro);
+		System.out.println(actorName);
 		LabelItem item = null;
 		if(eventType==21)//not event
 			item = new LabelItem(label.labelID, dbname, newsid, label.newsTitle);
 		else{
 			connectLabelDB.addtrigger(triggerWord);
+			
 			String []source = sourceActor.split("_");
 			String []sourcetype = sourceActorPro.split("_");
 			for(int i = 0;i<source.length;i++)
@@ -144,10 +177,16 @@ public class AddLabelAction extends ActionSupport implements Action{
 			for(int i = 0;i<target.length;i++)
 				connectLabelDB.addentity(target[i], targettype[i]);
 			
+			String []actor = actorName.split("_");
+			String []actortype = actorPro.split("_");
+			for(int i = 0;i<actor.length;i++)
+				connectLabelDB.addentity(actor[i], actortype[i]);
+			
 			item = new LabelItem(label.labelID, dbname, newsid, label.newsTitle,
 				eventType, sourceActor, targetActor, triggerWord, sourceActorPro, targetActorPro, eventTime,
-				eventLocation,null,null,null,null);
+				eventLocation,actorIndex,actorLen,actorPro,actorName);
 		}
+		
 		connectLabelDB.RemarkLabel(item, username);
 		return this.SUCCESS;
 	}

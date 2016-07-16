@@ -244,7 +244,7 @@ CREATE TABLE `label_formal_data` (
 			List rows = jdbcTemplate.queryForList(queryString);
 			if(rows.size()>0){
 				queryString = "UPDATE label_formal_data SET if_event=?,source_actor=?,trigger_word=?,target_actor=?,source_actorPro=?,target_actorPro=?,event_type=?"+
-						",event_date=?,event_location=?,marker_name=?,mark_time=? actor_index=?, actor_len=?, actor_Pro=? ,actor=? WHERE label_id=?";
+						",event_date=?,event_location=?,marker_name=?,mark_time=?, actor_index=?, actor_len=?, actor_Pro=? ,actor=? WHERE label_id=?";
 				jdbcTemplate.update(queryString, new Object[]{item.ifEvent,item.sourceActor,item.triggerWord,item.targetActor,item.sourceActorPro,item.targetActorPro,item.eventType,
 						item.eventTime,item.eventLocation,loginUser,date.toString(),item.actor_index,item.actor_len,item.actor_Pro,item.actor,item.labelID});
 			}
@@ -261,7 +261,7 @@ CREATE TABLE `label_formal_data` (
 				{
 					queryString =	
 							"INSERT INTO label_formal_data (label_id,news_source,news_id,news_title,if_event,source_actor,trigger_word,target_actor,source_actorPro,target_actorPro,event_type,event_date,event_location,marker_name,mark_time,actor_index,actor_len,actor_Pro,actor) "+
-							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+							"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 							jdbcTemplate.update(queryString, new Object[]{item.labelID,item.newsSource,item.newsID,item.newsTitle,0,item.sourceActor,item.triggerWord,item.targetActor,item.sourceActorPro,item.targetActorPro,
 									item.eventType,item.eventTime,item.eventLocation,loginUser,date.toString(),item.actor_index,item.actor_len,item.actor_Pro,item.actor});
 				}  
@@ -289,6 +289,8 @@ CREATE TABLE `label_formal_data` (
 			date.getTime();
 			queryString = "UPDATE "+ item.newsSource+" SET state=1 WHERE id="+item.newsID;
 			jdbcTemplate.execute(queryString);
+			queryString = "UPDATE label_temp_data SET if_remark=1 where news_id=? and news_source=?";
+			jdbcTemplate.update(queryString, new Object[]{item.newsID, item.newsSource});
 		}
 		catch(Exception e){
 			e.printStackTrace();

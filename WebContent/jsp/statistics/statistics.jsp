@@ -12,7 +12,7 @@ String username = (String)session.getAttribute("username");
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>选择新闻</title>
+        <title>新闻统计</title>
 
         <!-- CSS -->
        	
@@ -22,6 +22,8 @@ String username = (String)session.getAttribute("username");
        	<!-- SCRIPT -->
 		<script src="<%=basePath%>form-1/assets/js/jquery-2.1.4.min.js"></script>
   		<script src="<%=basePath%>form-1/assets/bootstrap/js/bootstrap.min.js"></script>
+  		<script src="<%=basePath%>form-1/assets/js/jquery.query.js"></script>
+  		<script src="<%=basePath%>form-1/assets/js/getnews.js"></script>
 		<script src="<%=basePath%>form-1/assets/Chart/Chart.js"></script>
         
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -59,6 +61,13 @@ String username = (String)session.getAttribute("username");
             			<li><a href="javascript:void(0);" id="getunchangednews">未修改</a></li>
             			<li><a href="javascript:void(0);" id="getunconfirmednews">未确认</a></li>
             			<li><a href="javascript:void(0);" id="getconfirmednews">已确认</a></li>
+          			</ul>
+        		</li>
+        		<li class="dropdown">
+          			<a href="chooseentity" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">实体列表 <span class="caret"></span></a>
+          			<ul class="dropdown-menu">
+          				<li><a href="javascript:void(0);" id="getformalentity">正式表</a></li>
+            			<li><a href="javascript:void(0);" id="gettempentity">临时表</a></li>
           			</ul>
         		</li>
         		<li><a href="statistics">统计</a></li>

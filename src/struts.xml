@@ -6,6 +6,7 @@
 <struts>
     <include file="config/struts/user.xml"/>
     <include file="config/struts/news.xml"/>
+    <include file="config/struts/entity.xml"/>
     <include file="config/struts/mark.xml"/>
     <include file="config/struts/statistics.xml"/>
 </struts>

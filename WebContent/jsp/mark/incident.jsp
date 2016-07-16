@@ -45,6 +45,7 @@ String actor = (String)session.getAttribute("actor");
 		<script src="<%=basePath%>form-1/assets/js/incident.js"></script>
   		<script src="<%=basePath%>form-1/assets/bootstrap/js/bootstrap.js"></script>
         <script src="<%=basePath%>form-1/assets/js/bootstrap-suggest.js"></script>
+        <script src="<%=basePath%>form-1/assets/js/incident-add-drop.js"></script>
         
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -168,6 +169,13 @@ String actor = (String)session.getAttribute("actor");
             			<li><a href="javascript:void(0);" id="getconfirmednews">不相关</a></li>
           			</ul>
         		</li>
+        		<li class="dropdown">
+          			<a href="chooseentity" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">实体列表 <span class="caret"></span></a>
+          			<ul class="dropdown-menu">
+          				<li><a href="javascript:void(0);" id="getformalentity">正式表</a></li>
+            			<li><a href="javascript:void(0);" id="gettempentity">临时表</a></li>
+          			</ul>
+        		</li>
         		<li><a href="statistics">统计</a></li>
      	</ul>
       <form class="navbar-form navbar-left" role="search">
@@ -197,7 +205,8 @@ String actor = (String)session.getAttribute("actor");
 		<%
 			out.print("<h4 id=\"contenttext\">");
 			if(actor==null||actor.trim().length()<=0){
-				out.print("<a class=\"common\">"+title+"</a>");
+				for(int i = 0;i<title.length();i++)				
+					out.print("<a class=\"common\">"+title.charAt(i)+"</a>");
 			}
 			else{
 				String[]actor_indexs = actor_index.split("_");
@@ -224,7 +233,7 @@ String actor = (String)session.getAttribute("actor");
 							out.print("<a class=\"roleinfor\">"+title.charAt(i)+"</a>");
 						}
 						else if(actor_Pros[j].equals("orgnizationinfor")){
-							out.print("<a class=\"orgnization\">"+title.charAt(i)+"</a>");
+							out.print("<a class=\"orgnizationinfor\">"+title.charAt(i)+"</a>");
 						}
 						if(i==index+length-1){
 							if(actor_Pros[j].equals("countryinfor")){
@@ -261,7 +270,7 @@ String actor = (String)session.getAttribute("actor");
 				}
 			}
 			out.print("</h4>");
-			out.print("<h4>"+title+"</h4>");
+			//out.print("<h4>"+title+"</h4>");
 			%>
 			<!-- Color compare -->
 			<table width="100%" cellspacing="1">
@@ -375,7 +384,7 @@ String actor = (String)session.getAttribute("actor");
 								"<td class=\"col-xs-12\" style=\"border-top:0px\">"+
 									"<div class=\"input-group\">"+
 										"<span type=\"button\" class=\"input-group-addon sponsor\">发起者</span>"+
-                						"<input type=\"text\" class=\"form-control sponsorinput\" value=\"";
+                						"<input type=\"text\" class=\"form-control sponsorinput\"  style=\"width:320px\" value=\"";
                 String s2 = "\">"+
 										"<span class=\"input-group-addon sponsor\">类型</span>"+
 										"<input type=\"text\" class=\"form-control sponsor-suggest\" value=\"";
@@ -451,7 +460,7 @@ String actor = (String)session.getAttribute("actor");
 								"<td class=\"col-xs-12\" style=\"border-top:0px\">"+
 									"<div class=\"input-group\">"+
 										"<span type=\"button\" class=\"input-group-addon bearer\">承受者</span>"+
-                						"<input type=\"text\" class=\"form-control bearerinput\" value=\"";
+                						"<input type=\"text\" class=\"form-control bearerinput\" style=\"width:320px\" value=\"";
                 String b2 = "\">"+
 										"<span class=\"input-group-addon bearer\">类型</span>"+
 										"<input type=\"text\" class=\"form-control bearer-suggest\" value=\"";
@@ -671,10 +680,70 @@ String actor = (String)session.getAttribute("actor");
 			targetActorsuggest=targetActorsuggest.substring(0,targetActorsuggest.length-1);
 			//alert(targetActorsuggest);
 			
+			var actor_index = "";
+			var actor_len = "";
+			var actor_Pro = "";
+			var actor = "";
+			
+			var contenttext = $(document.getElementById("contenttext")).children();
+			var this_index = 0;
+			var this_len = 0;
+			var flag = 0;
+			var index = 0;
+			$(contenttext).each(function(){
+				if(flag==0&&!$(this).hasClass("common")){//an entity begin
+					flag = 1;
+					this_index = index;
+					this_len = this_len+1;
+					index = index +1;
+					if(actor.length<=0)actor = actor+$(this).text();
+					else actor = actor + "_" + $(this).text();
+				}
+				else if(flag==1&&!$(this).hasClass("common")&&this.nodeName!="FONT"){
+					this_len= this_len+1;
+					index = index+1;
+					actor = actor + $(this).text();
+				}
+				else if(flag==1&&this.nodeName=="FONT"){
+					actor_index = actor_index+this_index+"_";
+					actor_len = actor_len+this_len+"_";
+					this_len = 0;
+					flag = 0;
+					var className = "";
+					if($(this).text()=="(设备)")
+						className = "deviceinfor";
+					else if($(this).text()=="(人物)")
+						className = "personinfor";
+					else if($(this).text()=="(国家)")
+						className = "countryinfor";
+					else if($(this).text()=="(地区)")
+						className = "regioninfor";
+					else if($(this).text()=="(组织)")
+						className = "orgnizationinfor";
+					else if($(this).text()=="(职位)")
+						className = "roleinfor";
+					else if($(this).text()=="(其他)")
+						className = "otherinfor";
+					if(actor_Pro.length<=0)actor_Pro = actor_Pro + className;
+					else actor_Pro = actor_Pro + "_" + className;
+				}
+				else 
+					index = index+1;
+			});
+			if(actor_index.length>0){
+				actor_index = actor_index.substring(0,actor_index.length-1);
+			}
+			if(actor_len.length>0){
+				actor_len = actor_len.substring(0,actor_len.length-1);
+			}
+			//alert(actor_index);
+			//alert(actor_len);
+			//alert(actor_Pro);
+			//alert(actor);
 			$.ajax({
 				url:'addLabel',
 				type:'post',
-				data:{eventType:incidenttype, sourceActor:sourceActorinput, targetActor:targetActorinput, sourceActorPro:sourceActorsuggest, targetActorPro:targetActorsuggest, triggerWord:$("#triggerWord").val(), eventLocation:$("#location").val(), eventTime:$("#time").val(), username:$('#username').get(0).innerText, "dbname":$.query.get('dbname'), "newsid":$.query.get('newsid')},
+				data:{actorIndex:actor_index,actorLen:actor_len,actorPro:actor_Pro,actorName:actor,eventType:incidenttype, sourceActor:sourceActorinput, targetActor:targetActorinput, sourceActorPro:sourceActorsuggest, targetActorPro:targetActorsuggest, triggerWord:$("#triggerWord").val(), eventLocation:$("#location").val(), eventTime:$("#time").val(), username:$('#username').get(0).innerText, "dbname":$.query.get('dbname'), "newsid":$.query.get('newsid')},
 				success:function(data){
 					//alert(data);
 					$('#markusername').val($('#username').get(0).innerText);
